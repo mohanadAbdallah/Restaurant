@@ -14,15 +14,16 @@ class PermissionTableSeeder extends Seeder
      */
     public function run(): void
     {
-        $parents = [
-            'role' => ['view', 'add', 'edit', 'delete'],
-            'restaurant' => ['view', 'add', 'edit', 'delete','manage'],
-            'category' => ['view', 'add', 'edit', 'delete'],
-            'item' => ['view', 'add', 'edit', 'delete'],
-            'user' => ['view', 'add', 'edit', 'delete'],
-            'statistics' => ['view'],
-            'financial' => ['view'],
-        ];
+            $parents = [
+                'role' => ['view', 'add', 'edit', 'delete'],
+                'restaurant' => ['view', 'add', 'edit', 'delete','manage'],
+                'category' => ['view', 'add', 'edit', 'delete'],
+                'item' => ['view', 'add', 'edit', 'delete'],
+                'user' => ['view', 'add', 'edit', 'delete'],
+                'statistics' => ['view'],
+                'financial' => ['view'],
+
+            ];
 
 
         foreach ($parents as $parent => $types) {
@@ -73,12 +74,18 @@ class PermissionTableSeeder extends Seeder
             'delete_item',
             'view_statistics',
             'view_financial',
+
         ]);
         $dataEntryRole->givePermissionTo([
             'view_item',
             'add_item',
             'edit_item',
             'delete_item',
+
+            'view_category',
+            'add_category',
+            'edit_category',
+            'delete_category',
         ]);
         $financialRole->givePermissionTo([
             'view_statistics',

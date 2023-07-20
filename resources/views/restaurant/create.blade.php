@@ -48,6 +48,14 @@
                         </div>
                     </div>
 
+                    <div class="form-group row ">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <textarea class="form-control" name="description" id="floatingTextarea2" style="height: 100px"></textarea>
+                            <label for="floatingTextarea2">الوصف (إختياري )</label>
+
+                        </div>
+                    </div>
+
                     <div class="form-group row">
                         <div class="col-sm-6 mb-3 mb-sm-0">
                             <label class="form-label">المستخدم</label>
@@ -72,6 +80,7 @@
                         </div>
 
                     </div>
+
                     <div class="text-left mt-5">
                         <button type="submit" class="btn btn-primary">حفظ</button>
                         <a href="#" type="button" style="text-decoration: none;color: white" class="btn btn-danger">الخلف</a>
@@ -166,20 +175,6 @@
                                        id="password_confirmation">
                             </div>
                         </div>
-                        <div class="form-group row ">
-                            <div class="col-sm-6 ">
-
-                            </div>
-                            <div class="col-sm-4 ">
-                                <select class="form-control" name="roles">
-                                    <option disabled selected>إختر الصلاحية</option>
-                                    @foreach(\Illuminate\Support\Facades\DB::table('roles')->get()  as $role)
-                                        <option value="{{$role->id}}">{{$role->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

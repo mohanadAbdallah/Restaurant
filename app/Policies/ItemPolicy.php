@@ -8,28 +8,20 @@ use Illuminate\Auth\Access\Response;
 
 class ItemPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
+
     public function viewAny(User $user): bool
     {
         return $user->can('view_item');
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, Item $item): bool
-    {
-        //
-    }
+
 
     /**
      * Determine whether the user can create models.
      */
     public function create(User $user): bool
     {
-        //
+        return $user->can('add_item');
     }
 
     /**
@@ -37,7 +29,7 @@ class ItemPolicy
      */
     public function update(User $user, Item $item): bool
     {
-        //
+        return $user->can('update_item');
     }
 
     /**
@@ -45,22 +37,7 @@ class ItemPolicy
      */
     public function delete(User $user, Item $item): bool
     {
-        //
+        return $user->can('delete_item');
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Item $item): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Item $item): bool
-    {
-        //
-    }
 }

@@ -53,7 +53,7 @@
                                             <div class="form-group">
                                                 @can('edit_restaurant')
                                                     <a href="{{route('restaurant.edit',$restaurant->id)}}"
-                                                       class="btn btn-primary">
+                                                       class="btn btn-primary btn-sm">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endcan
@@ -61,7 +61,7 @@
                                                     <a href="javascript:void(0)"
                                                        onclick="delete_item({{$restaurant->id}})"
                                                        data-toggle="modal" data-target="#delete_modal"
-                                                       class="btn btn-danger"><i class="fa fa-trash"></i>
+                                                       class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
                                                     </a>
                                                 @endcan
                                             </div>
@@ -127,7 +127,7 @@
     <script>
         function delete_item(id) {
             $('#restaurant_id').val(id);
-            var url = "{{url('restaurant')}}/" + id;
+            var url = "{{url('dashboard/restaurant')}}/" + id;
             $('#delete_form').attr('action', url);
         }
     </script>

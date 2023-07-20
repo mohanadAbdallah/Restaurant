@@ -13,14 +13,25 @@ class CategoryController extends Controller
 
     public function index(): View
     {
-        $categories = auth()->user()->restaurant->categories()->get();
+        $restaurant = auth()->user()->restaurant;
+        $categories = null;
+        if ($restaurant){
+            $categories = $restaurant->categories()->get();
+        }
+
 
         return view('category.index', compact('categories'));
     }
 
     public function create(): View
     {
-        $categories = auth()->user()->restaurant->categories()->whereNull('parent_id')->get();
+        $categories = null;
+        $restaurant = auth()->user()->restaurant;
+
+        if ($restaurant){
+            $categories = $restaurant->categories()->whereNull('parent_id')->get();
+        }
+
         return view('category.create', compact('categories'));
     }
 
@@ -31,15 +42,22 @@ class CategoryController extends Controller
         ]);
 
         $validatedData['slug'] = Str::slug($validatedData['title']);
-        $validatedData['restaurant_id'] = auth()->user()->restaurant->id ?? [];
+        $validatedData['restaurant_id'] = auth()->user()->restaurant->id;
+
+        if ($request->hasFile('image') && $request->image != null) {
+            $imageName = $request->image->getClientOriginalName();
+            $request->image->storeAs('public/images', $imageName);
+
+            $validatedData['image'] = $imageName;
+        }
 
         if ($request->filled('parent_id')) {
             $validatedData['parent_id'] = $request->input('parent_id');
         }
+
         if ($parent_id){
             $validatedData['parent_id'] = $parent_id;
         }
-
 
         Category::create($validatedData);
 
@@ -69,6 +87,7 @@ class CategoryController extends Controller
     public function destroy(Category $category): RedirectResponse
     {
         $category->delete();
-        return redirect()->back()->with('status', 'Category Deleted Successfully.');
+
+       return redirect()->route('categories.index')->with('status', 'Category Deleted Successfully.');
     }
 }

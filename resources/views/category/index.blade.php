@@ -50,12 +50,12 @@
                                             <div class="form-group" style="font-size: 5px;">
                                                 <td>
                                                     <a href="{{route('categories.edit',$category->id)}}"
-                                                       class="btn btn-primary"><i
+                                                       class="btn btn-primary btn-sm"><i
                                                             class="fa fa-edit"></i></a>
                                                     <a href="javascript:void(0)"
                                                        onclick="delete_item({{$category->id}})"
                                                        data-toggle="modal" data-target="#delete_modal"
-                                                       class="btn btn-danger">
+                                                       class="btn btn-danger btn-sm">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
 
@@ -131,7 +131,7 @@
     <script>
         function delete_item(id) {
             $('#category_id').val(id);
-            var url = "{{url('categories')}}/" + id;
+            var url = "{{url('dashboard/categories')}}/" + id;
             $('#delete_form').attr('action', url);
         }
     </script>

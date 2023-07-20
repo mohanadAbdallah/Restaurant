@@ -13,7 +13,7 @@ class RoleController extends Controller
 {
     public function index(): View
     {
-        $roles = Role::all();
+        $roles = Role::where('name','!=','Super Admin')->get();
         return \view('auth.roles.index', compact('roles'));
 
     }
@@ -33,7 +33,7 @@ class RoleController extends Controller
         $role = Role::create(['name' => $request->input('name')]);
         $role->syncPermissions($request->input('permission'));
 
-        return redirect()->route('roles.index')->with('status', 'Role Created Successfully');
+        return redirect()->route('roles.index')->with('status', 'تمت إضافة الصلاحية بنجاح');
     }
 
     public function edit(Role $role): View
@@ -55,13 +55,13 @@ class RoleController extends Controller
         $role->save();
         $role->syncPermissions($request->input('permission'));
 
-        return redirect()->route('roles.index')->with('status','Role Updated Successfully.');
+        return redirect()->route('roles.index')->with('status','تم تحديث الصلاحية بنجاح');
 
     }
 
     public function destroy(Role $role): RedirectResponse
     {
         $role->delete();
-        return redirect()->route('roles.index')->with('status','Role Deleted Successfully');
+        return redirect()->route('roles.index')->with('status','تم عملية الحذف بنجاح');
     }
 }

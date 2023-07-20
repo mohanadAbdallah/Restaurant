@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Models\Category;
 use App\Models\Item;
 use App\Models\Restaurant;
 use App\Models\User;
+use App\Policies\CategoryPolicy;
 use App\Policies\ItemPolicy;
 use App\Policies\RestaurantPolicy;
 use App\Policies\UserPolicy;
@@ -23,6 +25,7 @@ class AuthServiceProvider extends ServiceProvider
         Restaurant::class =>RestaurantPolicy::class,
         User::class =>UserPolicy::class,
         Item::class =>ItemPolicy::class,
+        Category::class =>CategoryPolicy::class,
     ];
 
     /**

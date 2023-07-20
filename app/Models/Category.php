@@ -14,7 +14,7 @@ class Category extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $fillable= ['title','restaurant_id','parent_id','slug'];
+    protected $fillable= ['title','restaurant_id','parent_id','slug','image'];
 
     public function subCategories(): HasMany
     {

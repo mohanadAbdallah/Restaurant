@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RestaurantRequest extends FormRequest
 {
@@ -22,7 +23,8 @@ class RestaurantRequest extends FormRequest
             'phone'=>['required','string'],
             'address'=>['required','string'],
             'user_id'=>['required','numeric'],
-            'image'=> ['nullable']
+            'image'=> ['nullable'],
+            'description'=> ['nullable']
             ];
     }
 }

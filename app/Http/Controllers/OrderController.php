@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Item;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -13,7 +14,15 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        $orders = Order::query();
+
+        if (auth()->user()->restaurant) {
+            $orders = $orders->with(['user', 'items' => function ($query) {
+                $query->where('restaurant_id', auth()->user()->restaurant->id);
+            }])
+                ->get();
+        }
+        return view('orders.index', ['orders' => $orders]);
     }
 
     /**
@@ -22,6 +31,7 @@ class OrderController extends Controller
     public function create()
     {
         $items = Item::all();
+
         return view('orders.create', compact('items'));
     }
 
@@ -30,7 +40,36 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $cart = $request->session()->get('cart', []);
+        $orderTotal = 0;
+
+        foreach ($cart as $itemId => $result) {
+            $item = Item::find($itemId);
+
+            if ($item) {
+                $orderTotal += $item->price * $result['quantity'];
+            }
+        }
+
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'total' => $orderTotal,
+            'status' => 2,
+
+        ]);
+
+        foreach ($cart as $itemId => $result) {
+            $item = Item::find($itemId);
+            if ($item) {
+                $order->items()->attach($item->id, ['quantity' => $result['quantity'], 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+            }
+        }
+
+        $request->session()->forget('cart');
+
+        return redirect()->route('orders.payment.create',$order->id);
+
+
     }
 
     /**
@@ -57,11 +96,10 @@ class OrderController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Order $order)
     {
-        //
+        $order->delete();
+        return redirect()->route('orders.index')->with('status','تمت عملية إضافة مطعم بنجاح');
     }
 }

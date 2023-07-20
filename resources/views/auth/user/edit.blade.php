@@ -73,8 +73,8 @@
                         <div class="col-sm-4 mb-3 mb-sm-0">
                             <select class="form-control" name="roles">
                                 <option disabled value="null">إختر الصلاحية</option>
-                                @foreach(\Illuminate\Support\Facades\DB::table('roles')->get()  as $role)
-                                    <option  value="{{$role->id}}">{{$role->name}}</option>
+                                @foreach($roles  as $role)
+                                    <option  value="{{$role->id}}" >{{$role->name}}</option>
                                 @endforeach
                             </select>
                         </div>

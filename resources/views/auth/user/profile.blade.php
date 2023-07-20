@@ -3,8 +3,14 @@
 @section('content')
     <!-- Begin Page Content -->
     <div class="container-fluid" dir="rtl">
+
         <div class="row">
             <div class="col-md-10">
+                @if (session('status'))
+                    <div class="alert alert-success">
+                        {{ session('status') }}
+                    </div>
+                @endif
                 @if($errors->any())
                     @foreach($errors->all() as $error)
                         <div class="alert alert-danger">

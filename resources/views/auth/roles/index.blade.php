@@ -11,7 +11,7 @@
     <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">المستخدمين</h6>
+                <h6 class="m-0 font-weight-bold text-primary">الصلاحيات</h6>
                 <a href="{{route('roles.create')}}" class="btn btn-primary">Add Role</a>
             </div>
             <div class="card-body">
@@ -38,10 +38,10 @@
                                     <a href="javascript:void(0)" onclick="delete_item({{$role->id}})"
                                        data-toggle="modal"
                                        data-target="#delete_modal"
-                                       class="btn btn-danger">
+                                       class="btn btn-danger btn-sm">
                                         <i class="fa fa-trash"></i>
                                     </a>
-                                    <a href="{{route('roles.edit',$role->id)}}" class="btn btn-secondary">
+                                    <a href="{{route('roles.edit',$role->id)}}" class="btn btn-secondary btn-sm">
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 </td>

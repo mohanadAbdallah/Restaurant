@@ -4,7 +4,10 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Auth\CanResetPassword;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,7 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable implements CanResetPassword
+class User extends Authenticatable implements CanResetPassword ,MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable,SoftDeletes, \Illuminate\Auth\Passwords\CanResetPassword,HasRoles;
 
@@ -29,7 +32,8 @@ class User extends Authenticatable implements CanResetPassword
         'address',
         'status',
         'image',
-        'type'
+        'type',
+        'restaurant_id'
     ];
 
     /**
@@ -55,5 +59,10 @@ class User extends Authenticatable implements CanResetPassword
     public function restaurant(): HasOne
     {
         return $this->hasOne(Restaurant::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

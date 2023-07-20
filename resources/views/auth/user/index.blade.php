@@ -23,7 +23,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>الإسم</th>
+                            <th>الإسم </th>
                             <th>الإيميل</th>
                             <th>رقم الجوال</th>
                             <th>العنوان</th>
@@ -62,7 +62,7 @@
                                     <td>
                                         <div class="form-group">
                                             @can('edit_user')
-                                                <a href="{{route('users.edit',$user->id)}}" class="btn btn-primary">
+                                                <a href="{{route('users.edit',$user->id)}}" class="btn btn-primary btn-sm">
                                                     <i class="fa fa-edit"></i>
                                                 </a>
                                             @endcan
@@ -70,7 +70,7 @@
                                                 <a href="javascript:void(0)"
                                                    onclick="delete_item({{$user->id}})"
                                                    data-toggle="modal" data-target="#delete_modal"
-                                                   class="btn btn-danger">
+                                                   class="btn btn-danger btn-sm">
                                                     <i class="fa fa-trash"></i>
                                                 </a>
                                             @endcan
@@ -135,7 +135,7 @@
     <script>
         function delete_item(id) {
             $('#user_id').val(id);
-            var url = "{{url('users')}}/" + id;
+            var url = "{{url('dashboard/users')}}/" + id;
             $('#delete_form').attr('action', url);
         }
     </script>

@@ -37,7 +37,7 @@ class RestaurantPolicy
      */
     public function update(User $user, Restaurant $restaurant): bool
     {
-        return $user->can('edit_restaurant') && $user->id === $restaurant->user_id;
+        return $user->canAny(['edit_restaurant','manage_restaurant']) && $user->id === $restaurant->user_id;
     }
 
     /**

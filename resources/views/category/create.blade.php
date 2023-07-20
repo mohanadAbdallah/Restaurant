@@ -22,17 +22,36 @@
                         </div>
                     </div>
                     <div class="form-group row">
+
+                        <div class="col-sm-6">
+                            <img src="#" alt="Uploaded Image" id="previewImage"
+                                 style="display: none;max-width: 75px;max-height: 75px;border-radius: 5px;margin: 18px 150px -37px 0;">
+                        </div>
+                    </div>
+                    <div class="form-group row mb-3">
+
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <img src="#" alt="Uploaded Image" id="previewImage" style="display: none;width: 40px;">
+                        <label for="formFile" class="form-label">الصورة</label>
+                        <input class="form-control" name="image" style="padding: 9px 22px 0px 1px;height: 48px;"
+                               type="file" id="imageInput">
+                    </div>
+                    </div>
+                    <div class="form-group row mt-4">
                         <div class="col-sm-6 mb-3 mb-sm-0">
                             <label for="parent_id">القسم الأب : (إختياري )</label>
 
                             <select name="parent_id" class="form-control" id="parent_id">
                                 <option value="">None</option>
+                                @if($categories)
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->title }}</option>
                                 @endforeach
+                                @endif
                             </select>
                         </div>
                     </div>
+
                     <div class="text-left mt-5">
                         <a href="{{route('categories.index')}}" type="button" style="text-decoration: none;color: white" class="btn btn-danger">الخلف</a>
                         <button type="submit" class="btn btn-primary">حفظ</button>
@@ -53,5 +72,19 @@
             padding: 18px;
         }
     </style>
+    <script type="text/javascript">
+
+        document.getElementById('imageInput').addEventListener('change', function (e) {
+            var file = e.target.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById('previewImage').setAttribute('src', e.target.result);
+                document.getElementById('previewImage').style.display = 'block';
+            }
+
+            reader.readAsDataURL(file);
+        });
+    </script>
 
 @endsection

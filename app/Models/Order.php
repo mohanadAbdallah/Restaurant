@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Order extends Model
 {
+    const Canceled = 0;
+    const Confirmed = 1;
+    const Pending = 2;
+
     use HasFactory;
     protected $fillable=['user_id','total','status'];
 
@@ -18,7 +22,7 @@ class Order extends Model
     }
     public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Item::class);
+        return $this->belongsToMany(Item::class,'item_order');
 
     }
 }

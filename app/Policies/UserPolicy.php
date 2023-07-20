@@ -20,7 +20,7 @@ class UserPolicy
      */
     public function view(User $user, User $model): bool
     {
-        return $user->can('view_user')  && $user->id === $model->id;
+        return $user->can('view_user')  || $user->id === $model->id;
     }
 
     /**
@@ -36,7 +36,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return $user->can('edit_user') && $user->id === $model->id;
+        return $user->can('edit_user') || $user->id === $model->id;
     }
 
     /**
@@ -44,7 +44,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return $user->can('delete_user') && $user->id === $model->id;
+        return $user->can('delete_user') || $user->id === $model->id;
     }
 
     /**

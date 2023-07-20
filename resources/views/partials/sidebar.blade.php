@@ -1,6 +1,7 @@
 <ul class="navbar-nav bg-dark sidebar sidebar-dark accordion" id="accordionSidebar">
     <!-- Sidebar - Brand -->
     <!-- Divider -->
+
     <hr class="sidebar-divider my-0">
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active mt-5">
@@ -31,7 +32,8 @@
     @endrole
 
 @if(!auth()->user()->hasRole('Super Admin'))
-    @role('Admin')
+   @hasanyrole('Admin|Data Entry')
+    @if(auth()->user()->restaurant)
         <hr class="sidebar-divider">
         <li class="nav-item">
         <a class="nav-link" href="{{route('categories.index')}}">
@@ -39,15 +41,27 @@
             <i class="fas fa-fw fa-list"></i>
         </a>
         </li>
+        @endif
     @endrole
 @endif
-
     @if(!auth()->user()->hasRole('Super Admin'))
-    @role('Admin')
+    @hasanyrole('Admin|Data Entry')
         <hr class="sidebar-divider">
         <li class="nav-item">
         <a class="nav-link" href="{{route('items.index')}}">
             <span>إدارة العناصر</span>
+            <i class="fas fa-fw fa-blog"></i>
+        </a>
+        </li>
+    @endrole
+@endif
+
+ @if(!auth()->user()->hasRole('Super Admin'))
+    @role('Admin')
+        <hr class="sidebar-divider">
+        <li class="nav-item">
+        <a class="nav-link" href="{{route('orders.index')}}">
+            <span>الطلبات</span>
             <i class="fas fa-fw fa-blog"></i>
         </a>
         </li>
@@ -80,11 +94,14 @@
         <div id="collapseUsers" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded text-right">
                 <a class="collapse-item" href="{{route('users.index')}}">المستخدمين</a>
+                @endrole
+                @role('Super Admin')
                 <a class="collapse-item" href="{{route('roles.index')}}">الأدوار الصلاحيات</a>
+                @endrole
             </div>
         </div>
     </li>
-    @endrole
+
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

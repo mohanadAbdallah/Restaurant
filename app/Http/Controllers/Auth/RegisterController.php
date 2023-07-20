@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -18,7 +19,7 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    public function store(UpdateUserRequest $request): RedirectResponse
+    public function store(StoreUserRequest $request): RedirectResponse
     {
         $validatedData = $request->validated();
         $validatedData['password'] = Hash::make($request->password);
@@ -26,6 +27,8 @@ class RegisterController extends Controller
 
         $user = User::create($validatedData);
         Auth::login($user);
+
+        event(new Registered($user));
 
         return redirect(RouteServiceProvider::HOME);
     }

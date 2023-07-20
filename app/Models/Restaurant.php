@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Restaurant extends Model
 {
     use HasFactory,SoftDeletes;
-    protected $fillable = ['name','phone','address','user_id','image'];
+    protected $fillable = ['name','phone','address','description','user_id','image'];
 
     public function user(): BelongsTo
     {

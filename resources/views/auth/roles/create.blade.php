@@ -110,6 +110,25 @@
                                                 @endif
                                             @endforeach
                                     </div>
+
+                                    <div class="list-group">
+                                            <button type="button" class="list-group-item list-group-item-action active">
+                                                <h5>Orders</h5>
+                                            </button>
+                                            @foreach($permissions as $value)
+                                                @if($value->parent=="order")
+                                                    <button type="button" for="ch1" class="list-group-item list-group-item-action btn-ch">
+                                                        <div class="form-check mb-0">
+                                                            <label class="form-check-label">
+                                                                <input class="form-input-styled" type="checkbox" name="permission[]"  value="{{$value->id}}">
+                                                                {{$value->name_key }}
+                                                            </label>
+                                                        </div>
+                                                    </button>
+                                                @endif
+                                            @endforeach
+                                    </div>
+
                                 </div>
                               </div>
                         </div>

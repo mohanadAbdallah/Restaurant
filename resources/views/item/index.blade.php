@@ -62,7 +62,7 @@
                                             <div class="form-group">
                                                 @can('edit_item')
                                                     <a href="{{route('items.edit',$item->id)}}"
-                                                       class="btn btn-primary">
+                                                       class="btn btn-primary btn-sm">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
                                                 @endcan
@@ -70,7 +70,7 @@
                                                     <a href="javascript:void(0)"
                                                        onclick="delete_item({{$item->id}})"
                                                        data-toggle="modal" data-target="#delete_modal"
-                                                       class="btn btn-danger"><i class="fa fa-trash"></i>
+                                                       class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>
                                                     </a>
                                                 @endcan
                                             </div>
@@ -136,7 +136,7 @@
     <script>
         function delete_item(id) {
             $('#item_id').val(id);
-            var url = "{{url('items')}}/" + id;
+            var url = "{{url('dashboard/items')}}/" + id;
             $('#delete_form').attr('action', url);
         }
     </script>

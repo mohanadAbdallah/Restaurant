@@ -27,9 +27,15 @@ class AuthenticateController extends Controller
             'email'=>'required',
             'password'=>'required',
         ]);
+
         if (Auth::attempt($validated)) {
             $request->session()->regenerate();
-            return redirect()->intended();
+            $auth_user = auth()->user()->getRoleNames()->toArray();
+
+
+            return in_array('Super Admin',$auth_user)
+            ? redirect()->intended('dashboard')
+            : redirect()->intended('');
         }
         return back()
             ->withErrors(['email' => 'These credentials dont match our records'])
