@@ -56,6 +56,10 @@ class PaymentsController extends Controller
                 'transaction_data' => json_encode($paymentIntent),
             ])->save();
 
+            $order->forceFill([
+                'status'=> '1'
+            ])->save();
+
             return redirect()->route('home')->with('status', 'payment-succeed');
         }
         return redirect()->route('orders.payments.create', [

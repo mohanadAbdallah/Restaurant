@@ -13,60 +13,44 @@
     <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">الطلبات</h6>
+                <h6 class="m-0 font-weight-bold text-primary">#{{$order->number}}</h6>
             </div>
-
-
-
             <div class="card-body">
-                <form  action="{{route('orders.index')}}" method="get">
-
-                    <label>
-                        <select name="orders" class="form-control">
-                            <option value="3" {{request()->orders == 3 ? 'selected' : ''}}>كل الطلبات</option>
-                            <option value="1" {{request()->orders == 1 ? 'selected' : ''}}>الطلبات المكتملة</option>
-                            <option value="2" {{request()->orders == 2 ? 'selected' : ''}}>الطلبات المعلقة</option>
-                            <option value="0" {{request()->orders == 0 ? 'selected' : ''}}>الطلبات الملغية</option>
-                        </select>
-                    </label>
-                    <button type="submit" class="btn btn-success">Filter</button>
-                </form>
                 <div class="table-responsive" dir="rtl">
                     <table class="table table-bordered text-right" id="dataTable">
-                        {{--                        @can('view_order')--}}
-                        <thead>
+                            <thead>
 
-                        <tr>
-                            <th># رقم الطلب</th>
-                            <th>إسم المستخدم</th>
-                            <th>حالة الطلب</th>
-                            <th>الإجمالي</th>
-                            <th>الإجراءات</th>
-                        </tr>
-                        </thead>
+                            <tr>
+                                <th>#</th>
+                                <th>المنتج</th>
+                                <th>السعر</th>
+                                <th>الكمية</th>
+                                <th>الجمالي</th>
+                                <th>تاريخ الطلب</th>
+                                <th>الصورة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                            </thead>
 
-                        <tbody>
-                        @if(isset($orders))
-                            <?php $_SESSION['i'] = 0 ?>
-                            @foreach($orders as $order)
-
+                            <tbody>
+                                <?php $_SESSION['i'] = 0 ?>
+                              @foreach($order->items as $item)
+                                    <?php $_SESSION['i'] = $_SESSION['i'] + 1 ?>
                                     <tr>
-                                        <td>
-                                            <a href="{{route('orders.show',$order->id)}}"
-                                                style="text-decoration: none;color: #858796;margin: 0px 12px 0px 0px;">
-                                                #{{$order->number ?? '--'}}
-                                            </a>
-                                        </td>
-                                        <td>
-                                            {{$order->user->name ?? ''}}
-                                        </td>
-                                        <td>
-                                            <span class="{{$order->status_badge ?? ''}}">{{$order->order_status ?? ''}}</span>
-                                        </td>
+
+                                        <td>{{$_SESSION['i']}}</td>
+                                        <td>{{$item->name ?? ''}}</td>
+                                        <td>{{$item->price ?? ''}}</td>
+                                        <td>{{$item->pivot->quantity ?? ''}}</td>
+
+                                        <td>{{$item->price * $item->pivot->quantity ?? ''}}</td>
+
+                                        <td>{{$order->created_at->diffForHumans() ?? ''}}</td>
 
                                         <td>
-                                            {{$order->total ?? ''}}
+                                            <img src="{{url("storage/images/".$item->image ?? '')}}" width="50px">
                                         </td>
+
                                         <td>
                                             <div class="form-group">
                                                 @can('edit_item')
@@ -86,9 +70,9 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                        @endif
-                        </tbody>
-                        {{--                        @endcan--}}
+
+                            </tbody>
+{{--                        @endcan--}}
                     </table>
                 </div>
             </div>

@@ -9,18 +9,28 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+
+    public function index(Request $request)
     {
         $orders = Order::query();
 
         if (auth()->user()->restaurant) {
+
+            if (\request()->filled('orders')){
+
+                // here an error
+                if (\request()->orders == 3){
+                    $orders = $orders->with(['user', 'items' => function ($query) {
+                        $query->where('restaurant_id', auth()->user()->restaurant->id);
+                    }])->whereHas('user')->get();
+                }
+
+                $orders = $orders->where('status','=',\request('orders'));
+            }
             $orders = $orders->with(['user', 'items' => function ($query) {
                 $query->where('restaurant_id', auth()->user()->restaurant->id);
-            }])
-                ->get();
+            }])->whereHas('user')->get();
+
         }
         return view('orders.index', ['orders' => $orders]);
     }
@@ -64,9 +74,7 @@ class OrderController extends Controller
                 $order->items()->attach($item->id, ['quantity' => $result['quantity'], 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
             }
         }
-
         $request->session()->forget('cart');
-
         return redirect()->route('orders.payment.create',$order->id);
 
 
@@ -75,9 +83,8 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Order $order)
-    {
-        //
+    public function show(Order $order){
+        return view('orders.show',compact('order'));
     }
 
     /**

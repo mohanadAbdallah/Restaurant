@@ -64,17 +64,17 @@ Route::get('/contact', function () {
 
 Route::middleware(['auth','verified'])->group(function () {
 
-    Route::get('/email/verify',function(){
-        return view('auth.verify-email');
-
-    })->name('verification.notice');
-
-    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-        $request->fulfill();
-
-        return redirect('/');
-
-    })->middleware('signed')->name('verification.verify');
+//    Route::get('/email/verify',function(){
+//        return view('auth.verify-email');
+//
+//    })->name('verification.notice');
+//
+//    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+//        $request->fulfill();
+//
+//        return redirect('/');
+//
+//    })->middleware('signed')->name('verification.verify');
 
     Route::post('logout', [AuthenticateController::class, 'logout'])->name('user.logout');
     Route::get('profile', [AuthenticateController::class, 'profile'])->name('user.profile');
@@ -114,8 +114,6 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::get('/cart/view', [CartController::class, 'viewCart'])->name('cart.view');
         Route::patch('update-cart', [CartController::class, 'update'])->name('update.cart');
         Route::delete('delete-from-cart', [CartController::class, 'delete'])->name('delete.from.cart');
-
-        Route::resource('orders', OrderController::class);
 
         Route::get('payments/{order}/pay', [PaymentsController::class, 'create'])
             ->name('orders.payment.create');
