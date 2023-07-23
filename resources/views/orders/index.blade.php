@@ -41,6 +41,7 @@
                             <th>إسم المستخدم</th>
                             <th>حالة الطلب</th>
                             <th>الإجمالي</th>
+                            <th>تاريخ الطلب</th>
                             <th>الإجراءات</th>
                         </tr>
                         </thead>
@@ -65,8 +66,11 @@
                                         </td>
 
                                         <td>
-                                            {{$order->total ?? ''}}
+                                            ₪{{$order->total ?? ''}}
                                         </td>
+
+                                        <td>{{$order->created_at->diffForHumans() ?? ''}}</td>
+
                                         <td>
                                             <div class="form-group">
                                                 @can('edit_item')

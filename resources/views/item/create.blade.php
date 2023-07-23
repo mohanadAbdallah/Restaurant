@@ -55,7 +55,7 @@
                             <select class="form-control" name="category_id" id="category_id">
                                 <option disabled selected>إختر القسم</option>
                                 @foreach($categories as $category)
-                                    <option value="{{$category->id}}">{{$category->title}}</option>
+                                    <option value="{{$category->id}}" {{request()->category == $category->id ? 'selected' : ''}}>{{$category->title}}</option>
                                 @endforeach
                             </select>
                         </div>

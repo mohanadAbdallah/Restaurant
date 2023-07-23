@@ -8,9 +8,10 @@
                 </div>
             @endforeach
         @endif
+        <a href="{{route('items.create',['category'=>$category->id])}}" class="btn btn-success">إضافة عنصر</a>
     <div class="card text-right" style="width: 40% ;margin: 0 auto 10px;float: none;">
         <div class="card-header">
-            {{$category->title }} القسم
+            القسم {{$category->title }}
         </div>
         <div class="card-body">
             @if(isset($category->subCategories))

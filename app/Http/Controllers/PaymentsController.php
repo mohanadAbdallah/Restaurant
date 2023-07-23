@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -14,7 +15,11 @@ class PaymentsController extends Controller
         return view('home.payments.create', compact('order'));
     }
 
-    public function createStripePaymentIntent(Order $order)
+    /**
+     * @throws \Stripe\Exception\ApiErrorException
+     */
+   public function createStripePaymentIntent(Order $order)
+
     {
         $stripe = new \Stripe\StripeClient(config('services.stripe.secret_key'));
         $paymentIntent = $stripe->paymentIntents->create([
@@ -41,7 +46,7 @@ class PaymentsController extends Controller
 
     }
 
-    public function confirm(Request $request, Order $order)
+    public function confirm(Request $request, Order $order): RedirectResponse
     {
         $stripe = new \Stripe\StripeClient(config('services.stripe.secret_key'));
 
@@ -59,6 +64,8 @@ class PaymentsController extends Controller
             $order->forceFill([
                 'status'=> '1'
             ])->save();
+
+            $request->session()->forget('cart');
 
             return redirect()->route('home')->with('status', 'payment-succeed');
         }

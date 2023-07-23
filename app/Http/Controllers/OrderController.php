@@ -5,50 +5,77 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Order;
 use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {
 
-    public function index(Request $request)
+    public function index(): View
     {
+        //        $orders = Order::query();
+//
+//        if (auth()->user()->restaurant) {
+//
+//            if (\request()->filled('orders')){
+//
+//                // here an error
+//                if (\request()->orders == 3){
+//                    $orders = $orders->with(['user', 'items' => function ($query) {
+//                        $query->where('restaurant_id', auth()->user()->restaurant->id);
+//                    }])->whereHas('user')->get();
+//                }
+//
+//                $orders = $orders->where('status','=',\request('orders'));
+//            }
+//            $orders = $orders->with(['user', 'items' => function ($query) {
+//                $query->where('restaurant_id', auth()->user()->restaurant->id);
+//            }])->whereHas('user')->get();
+//
+//        }
+//        return view('orders.index', ['orders' => $orders]);
+
         $orders = Order::query();
 
         if (auth()->user()->restaurant) {
 
-            if (\request()->filled('orders')){
+            $restaurantId = auth()->user()->restaurant->id;
 
-                // here an error
-                if (\request()->orders == 3){
-                    $orders = $orders->with(['user', 'items' => function ($query) {
-                        $query->where('restaurant_id', auth()->user()->restaurant->id);
-                    }])->whereHas('user')->get();
-                }
+            $orders = $orders->with(['user', 'items' => function ($query) use ($restaurantId) {
+                $query->where('restaurant_id', $restaurantId);
+            }]);
 
-                $orders = $orders->where('status','=',\request('orders'));
+            if (\request()->filled('orders') && \request()->orders == 3) {
+
+                $orders = $orders->whereHas('items', function ($q) use ($restaurantId) {
+                    return $q->where('restaurant_id', $restaurantId);
+                })->get();
+
+            } else if (\request()->filled('orders') && \request()->orders != 3) {
+                $orders = $orders->where('status', \request('orders'))
+                    ->whereHas('items', function ($q) use ($restaurantId) {
+                        return $q->where('restaurant_id', $restaurantId);
+                    })
+                    ->get();
+            } else {
+                $orders = $orders->whereHas('items', function ($q) use ($restaurantId) {
+                    return $q->where('restaurant_id', $restaurantId);
+                })->get();
             }
-            $orders = $orders->with(['user', 'items' => function ($query) {
-                $query->where('restaurant_id', auth()->user()->restaurant->id);
-            }])->whereHas('user')->get();
-
         }
+
         return view('orders.index', ['orders' => $orders]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function create(): View
     {
         $items = Item::all();
 
         return view('orders.create', compact('items'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $cart = $request->session()->get('cart', []);
         $orderTotal = 0;
@@ -74,39 +101,35 @@ class OrderController extends Controller
                 $order->items()->attach($item->id, ['quantity' => $result['quantity'], 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
             }
         }
-        $request->session()->forget('cart');
-        return redirect()->route('orders.payment.create',$order->id);
 
+        return redirect()->route('orders.payment.create', $order->id);
 
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order){
-        return view('orders.show',compact('order'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
+    public function show(Order $order): View
     {
-        //
+        return view('orders.show', compact('order'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
+    public function edit(Order $order): View
     {
-        //
+        return \view('orders.edit',['order',$order]);
+    }
+
+
+    public function update(Request $request, Order $order): RedirectResponse
+    {
+        $order->update([
+            'status' => $request->status,
+        ]);
+        return redirect()->route('orders.index')
+            ->with('status', 'Order Successfully Updated');
     }
 
 
     public function destroy(Order $order)
     {
         $order->delete();
-        return redirect()->route('orders.index')->with('status','تمت عملية إضافة مطعم بنجاح');
+        return redirect()->route('orders.index')->with('status', 'تمت عملية إضافة مطعم بنجاح');
     }
 }

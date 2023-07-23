@@ -25,8 +25,7 @@
                                 <th>المنتج</th>
                                 <th>السعر</th>
                                 <th>الكمية</th>
-                                <th>الجمالي</th>
-                                <th>تاريخ الطلب</th>
+                                <th>الإجمالي</th>
                                 <th>الصورة</th>
                                 <th>الإجراءات</th>
                             </tr>
@@ -40,12 +39,11 @@
 
                                         <td>{{$_SESSION['i']}}</td>
                                         <td>{{$item->name ?? ''}}</td>
-                                        <td>{{$item->price ?? ''}}</td>
+                                        <td>{{$item->price ?? ''}}₪</td>
                                         <td>{{$item->pivot->quantity ?? ''}}</td>
 
-                                        <td>{{$item->price * $item->pivot->quantity ?? ''}}</td>
+                                        <td>{{$item->price * $item->pivot->quantity ?? ''}}₪</td>
 
-                                        <td>{{$order->created_at->diffForHumans() ?? ''}}</td>
 
                                         <td>
                                             <img src="{{url("storage/images/".$item->image ?? '')}}" width="50px">
