@@ -2,30 +2,37 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessageNotification;
 use App\Models\Category;
+use App\Models\Message;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
 
+
     public function index(): View
     {
+        $user_id = auth()->user()->id;
         $restaurant = auth()->user()->restaurant;
+
         $categories = null;
         if ($restaurant){
             $categories = $restaurant->categories()->get();
         }
 
 
-        return view('category.index', compact('categories'));
+        return view('category.index', compact('categories','user_id'));
     }
 
     public function create(): View
     {
         $categories = null;
+
         $restaurant = auth()->user()->restaurant;
 
         if ($restaurant){

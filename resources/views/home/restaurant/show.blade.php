@@ -1,15 +1,30 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 
+<script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
+<script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
+
+
 @include('home.partials.head')
 
 <body>
 
 @include('home.partials.navbar')
 
+
 <!-- Testmonial Section -->
 <section id="testmonial" class="pattern-style-3">
     <div class="container">
+        {{--Chat--}}
+        <div class="floating-chat">
+            <a href="{{route('chat.index',request('restaurant'))}}" style="font-size: 15px;margin: 0px 0px 0px 0px">
+                <i class="fa fa-comments" style="color: #0c5460;padding: 0px 0px 0px 0px" aria-hidden="true"></i>
+            </a>
+            <div class="chat">
+
+            </div>
+        </div>
         <h3 class="section-title mb-5 text-center">Categories</h3>
 
         <div class="row">
@@ -34,8 +49,17 @@
                 @endforeach
         </div>
     </div>
+
+
+
+    <!-- partial -->
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    {{--Chat--}}
+
 </section>
+
 <!-- End of Testmonial Section -->
+
 
 </body>
 

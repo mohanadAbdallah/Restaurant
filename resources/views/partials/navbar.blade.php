@@ -5,20 +5,6 @@
         <i class="fa fa-bars"></i>
     </button>
 
-    <!-- Topbar Search -->
-{{--    <form--}}
-{{--        class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">--}}
-{{--        <div class="input-group">--}}
-{{--            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."--}}
-{{--                   aria-label="Search" aria-describedby="basic-addon2">--}}
-{{--            <div class="input-group-append">--}}
-{{--                <button class="btn btn-primary" type="button">--}}
-{{--                    <i class="fas fa-search fa-sm"></i>--}}
-{{--                </button>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </form>--}}
-
     <!-- Topbar Navbar -->
     <ul class="navbar-nav ml-auto">
 
@@ -52,6 +38,7 @@
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-bell fa-fw"></i>
 
+                <span class="badge badge-danger badge-counter">{{auth()->user()->unreadNotifications()->count()}}</span>
             </a>
             <!-- Dropdown - Alerts -->
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -59,6 +46,9 @@
                 <h6 class="dropdown-header">
                     Alerts Center
                 </h6>
+                @foreach(auth()->user()->unreadNotifications as $notification)
+                <p>New Order : {{$notification->data['order_number'] ?? ''}} was added in {{$notification->created_at->diffForHumans() ?? ''}}</p>
+                @endforeach
                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
             </div>
         </li>

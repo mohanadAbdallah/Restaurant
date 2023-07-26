@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\RoleController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
@@ -40,6 +41,7 @@ Route::middleware(['guest'])->group(function () {
     Route::post('reset-password', [AuthenticateController::class, 'resetPassword'])->name('password.update');
 
     Route::post('/forgot-password', [AuthenticateController::class, 'forgotPassword'])->name('password.email');
+    Route::get('/wait-for-reset', [AuthenticateController::class, 'wait'])->name('reset.wait');
 
     Route::get('/reset-password/{token}', function (string $token) {
         return view('auth.reset-password', ['token' => $token]);
@@ -62,19 +64,7 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
-Route::middleware(['auth','verified'])->group(function () {
-
-//    Route::get('/email/verify',function(){
-//        return view('auth.verify-email');
-//
-//    })->name('verification.notice');
-//
-//    Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-//        $request->fulfill();
-//
-//        return redirect('/');
-//
-//    })->middleware('signed')->name('verification.verify');
+Route::middleware(['auth'])->group(function () {
 
     Route::post('logout', [AuthenticateController::class, 'logout'])->name('user.logout');
     Route::get('profile', [AuthenticateController::class, 'profile'])->name('user.profile');
@@ -87,7 +77,9 @@ Route::middleware(['auth','verified'])->group(function () {
                 'users' => \App\Models\User::all()->count(),
             ];
             return view('dashboard')->with('data', $data);
-        })->name('dashboard');
+
+        })->middleware('role:Admin|Super Admin|Data Entry|Financial')
+            ->name('dashboard');
 
         Route::put('profile', [AuthenticateController::class, 'update_profile'])->name('profile.update');
 
@@ -100,6 +92,8 @@ Route::middleware(['auth','verified'])->group(function () {
 
         //categories
         Route::resource('categories', CategoryController::class);
+
+
         Route::post('/categories/{category_id}/subcategories', [CategoryController::class, 'store'])->name('subcategories.store');
 
         //items
@@ -108,23 +102,29 @@ Route::middleware(['auth','verified'])->group(function () {
         //orders
         Route::resource('orders', OrderController::class);
 
-
-        Route::post('/cart/add', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
-
-        Route::get('/cart/view', [CartController::class, 'viewCart'])->name('cart.view');
-        Route::patch('update-cart', [CartController::class, 'update'])->name('update.cart');
-        Route::delete('delete-from-cart', [CartController::class, 'delete'])->name('delete.from.cart');
-
-        Route::get('payments/{order}/pay', [PaymentsController::class, 'create'])
-            ->name('orders.payment.create');
-
-        Route::post('orders/{order}/stripe/payment-intent', [PaymentsController::class, 'createStripePaymentIntent'])
-            ->name('stripe.paymentIntent.create');
-
-        Route::get('orders/{order}/pay/stripe/callback', [PaymentsController::class, 'confirm'])
-            ->name('stripe.return');
-
     });
+
+    Route::get('/{id}/chat', [ChatsController::class, 'index'])->name('chat.index');
+    Route::get('/messages', [ChatsController::class, 'fetchMessages'])->name('fetchMessages');
+    Route::post('/messages/{id}', [ChatsController::class, 'sendMessage'])->name('chat.message.send');
+
+
+
+    Route::post('/cart/add', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
+
+    Route::get('/cart/view', [CartController::class, 'viewCart'])->name('cart.view');
+    Route::patch('update-cart', [CartController::class, 'update'])->name('update.cart');
+    Route::delete('delete-from-cart', [CartController::class, 'delete'])->name('delete.from.cart');
+
+    Route::get('payments/{order}/pay', [PaymentsController::class, 'create'])
+        ->name('orders.payment.create');
+
+    Route::post('orders/{order}/stripe/payment-intent', [PaymentsController::class, 'createStripePaymentIntent'])
+        ->name('stripe.paymentIntent.create');
+
+    Route::get('orders/{order}/pay/stripe/callback', [PaymentsController::class, 'confirm'])
+        ->name('stripe.return');
+
 
 
 });

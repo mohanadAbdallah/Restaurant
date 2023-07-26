@@ -26,6 +26,10 @@
 
         </div>
         <!-- End of Main Content -->
+        <script>
+            const userId = "{{auth()->id()}}"
+        </script>
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- Footer -->
     @include('partials.footer')

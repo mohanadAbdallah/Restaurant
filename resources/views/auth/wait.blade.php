@@ -2,32 +2,18 @@
 
 <div class="container" style="margin-top: 40px;">
 
-    <form action="{{route('password.email')}}" method="post">
-        @csrf
-        @if ($errors->any())
-            @foreach ($errors->all() as $error)
-                <div class="alert alert-danger">
-                    {{ $error }}
-                </div>
-            @endforeach
-        @endif
+
         @if (session('status'))
             <div class="alert alert-success">
                 {{ session('status') }}
             </div>
         @endif
+
         <div class="container">
-            <label for="email"><b>Email</b></label>
-            <input type="text" placeholder="Enter Email" name="email" required>
+            <h5>Email sent pleas check your inbox and click Reset Password.</h5>
         </div>
 
-        <div class="container" style="background-color:#f1f1f1;margin-top: 40px;">
-            <a href="javascript:history.back()" style="text-decoration: none;color: white" class="btn btn-danger">Back</a>
 
-            <button type="submit" class="btn btn-primary">Confirm</button>
-
-        </div>
-    </form>
 </div>
 
 <style>

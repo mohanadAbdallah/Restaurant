@@ -22,6 +22,7 @@ class PaymentsController extends Controller
 
     {
         $stripe = new \Stripe\StripeClient(config('services.stripe.secret_key'));
+
         $paymentIntent = $stripe->paymentIntents->create([
             'amount' => $order->total * 100,
             'currency' => 'ILS',
@@ -29,6 +30,7 @@ class PaymentsController extends Controller
         ]);
 
         $payment = new Payment();
+
         $payment->forceFill([
             'order_id' => $order->id,
             'amount' => $paymentIntent->amount,

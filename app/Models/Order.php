@@ -37,7 +37,7 @@ class Order extends Model
     public function getOrderStatusAttribute(): ?string
 
     {
-        if ($this->status == 1) {
+        if ($this->status == self::Confirmed) {
             return 'Confirmed';
         } elseif ($this->status == 2) {
             return 'Pending';

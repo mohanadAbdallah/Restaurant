@@ -2,39 +2,25 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessageNotification;
 use App\Models\Item;
+use App\Models\Message;
 use App\Models\Order;
+use App\Models\User;
+use App\Notifications\orderCreatedNotification;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
+
 use Illuminate\View\View;
 
 class OrderController extends Controller
 {
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        //        $orders = Order::query();
-//
-//        if (auth()->user()->restaurant) {
-//
-//            if (\request()->filled('orders')){
-//
-//                // here an error
-//                if (\request()->orders == 3){
-//                    $orders = $orders->with(['user', 'items' => function ($query) {
-//                        $query->where('restaurant_id', auth()->user()->restaurant->id);
-//                    }])->whereHas('user')->get();
-//                }
-//
-//                $orders = $orders->where('status','=',\request('orders'));
-//            }
-//            $orders = $orders->with(['user', 'items' => function ($query) {
-//                $query->where('restaurant_id', auth()->user()->restaurant->id);
-//            }])->whereHas('user')->get();
-//
-//        }
-//        return view('orders.index', ['orders' => $orders]);
+        //where relation
 
         $orders = Order::query();
 
@@ -46,24 +32,13 @@ class OrderController extends Controller
                 $query->where('restaurant_id', $restaurantId);
             }]);
 
-            if (\request()->filled('orders') && \request()->orders == 3) {
+            if ($request->filled('orders') && $request->query('orders') != 3) {
+                $orders = $orders->where('status', \request('orders'));
 
-                $orders = $orders->whereHas('items', function ($q) use ($restaurantId) {
-                    return $q->where('restaurant_id', $restaurantId);
-                })->get();
-
-            } else if (\request()->filled('orders') && \request()->orders != 3) {
-                $orders = $orders->where('status', \request('orders'))
-                    ->whereHas('items', function ($q) use ($restaurantId) {
-                        return $q->where('restaurant_id', $restaurantId);
-                    })
-                    ->get();
-            } else {
-                $orders = $orders->whereHas('items', function ($q) use ($restaurantId) {
-                    return $q->where('restaurant_id', $restaurantId);
-                })->get();
             }
+
         }
+        $orders = $orders->get();
 
         return view('orders.index', ['orders' => $orders]);
     }
@@ -79,9 +54,14 @@ class OrderController extends Controller
     {
         $cart = $request->session()->get('cart', []);
         $orderTotal = 0;
+        $restaurantAdmin = null;
 
         foreach ($cart as $itemId => $result) {
             $item = Item::find($itemId);
+            $restaurant_id =$item->restaurant_id;
+
+
+            $restaurantAdmin = User::where('restaurant_id',$restaurant_id)->first();
 
             if ($item) {
                 $orderTotal += $item->price * $result['quantity'];
@@ -92,8 +72,11 @@ class OrderController extends Controller
             'user_id' => auth()->id(),
             'total' => $orderTotal,
             'status' => 2,
-
         ]);
+
+        $restaurantAdmin->notify((new orderCreatedNotification($order)));
+
+        // Notification::send($restaurantAdmin, new orderCreatedNotification($order));
 
         foreach ($cart as $itemId => $result) {
             $item = Item::find($itemId);

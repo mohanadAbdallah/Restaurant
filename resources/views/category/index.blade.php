@@ -134,6 +134,9 @@
             var url = "{{url('dashboard/categories')}}/" + id;
             $('#delete_form').attr('action', url);
         }
+
+
+
     </script>
     <!-- /.container-fluid -->
 @endsection

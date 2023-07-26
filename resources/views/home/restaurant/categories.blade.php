@@ -68,6 +68,8 @@
 <script src="{{asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 <script src="{{asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 <script>
 
     $(document).ready(function() {
@@ -91,7 +93,20 @@
                 },
                 error: function(error) {
                     if(error.status == 401) {
-                        $('.show_login_modal').modal()
+                        // $('.show_login_modal').modal()
+                        Swal.fire({
+                            title: 'أنت غير مسجل دخول في الموقع ؟',
+                            showCancelButton: true,
+                            confirmButtonText: 'تسجيل دخول',
+                            cancelButtonText: `إغلاق`,
+                        }).then((result) => {
+
+                            if (result.isConfirmed) {
+                                window.location.href = '{{ route('user.login') }}';
+                            } else if (result.isCanceled) {
+                                Swal.fire('Changes are not saved', '', 'info')
+                            }
+                        })
                     }
                 }
             });

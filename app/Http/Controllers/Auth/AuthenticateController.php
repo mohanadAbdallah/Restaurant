@@ -87,10 +87,14 @@ class AuthenticateController extends Controller
         );
 
         return $status === Password::RESET_LINK_SENT
-            ? back()->with(['status' => __($status)])
+            ? redirect()->route('reset.wait')->with(['status' => 'email sent pleas check your inbox and click Reset Password.'])
             : back()->withErrors(['email' => __($status)]);
     }
 
+    public function wait(): View
+    {
+        return \view('auth.wait');
+    }
     public function resetPassword(Request $request): RedirectResponse
     {
         $request->validate([

@@ -7,8 +7,6 @@
 
 @include('home.partials.navbar')
 
-
-
 <!-- Page Header -->
 <header class="header">
     <div class="overlay">
@@ -54,8 +52,11 @@
         </div>
     </div>
 </section>
-<!-- End of Team Section -->
-
+    <!-- End of Team Section -->
+<script>
+    const userId = "{{auth()->id()}}"
+</script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 <!-- Prefooter Section  -->
 <div class="py-4 border border-lighter border-bottom-0 border-left-0 border-right-0 bg-dark">
@@ -104,10 +105,8 @@
 <!-- core  -->
 <script src="{{asset('assets/vendors/jquery/jquery-3.4.1.js')}}"></script>
 <script src="{{asset('assets/vendors/bootstrap/bootstrap.bundle.js')}}"></script>
-
 <!-- bootstrap affix -->
 <script src="{{asset('assets/vendors/bootstrap/bootstrap.affix.j')}}s"></script>
-
 <!-- Pigga js -->
 <script src="{{asset('assets/js/pigga.js')}}"></script>
 
