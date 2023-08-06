@@ -22,7 +22,7 @@
             </div>
             <div class="card-footer">
                 <div class="form-group">
-                    <a href="{{route('users.index')}}" class="btn btn-danger">الخلف</a>
+                    <a href="javascript:void(0)" onclick="history.back()" class="btn btn-danger">الخلف</a>
                 </div>
             </div>
         </div>

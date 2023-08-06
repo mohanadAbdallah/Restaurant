@@ -15,31 +15,31 @@
         <div class="row">
             <div class="col-md-12">
                 <label for="name"><b>Name</b></label>
-                <input type="text" placeholder="Enter Name" class="form-control" name="name" required>
+                <input type="text" placeholder="Enter Name" value="{{ old('name') }}" class="form-control" name="name" required>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <label for="email"><b>Email</b></label>
-                <input type="text" placeholder="Enter Email" class="form-control" name="email" required>
+                <input type="text" placeholder="Enter Email" value="{{ old('email') }}" class="form-control" name="email" required>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <label for="email"><b>Phone</b></label>
-                <input type="text" placeholder="Enter Phone" class="form-control" name="phone" required>
+                <input type="text" placeholder="Enter Phone" value="{{ old('phone') }}" class="form-control" name="phone" required>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <label for="address"><b>address</b></label>
-                <input type="text" placeholder="Enter address" class="form-control" name="address" required>
+                <input type="text" placeholder="Enter address" value="{{ old('address') }}" class="form-control" name="address" required>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <label for="email"><b>Password</b></label>
-                <input type="password" placeholder="Enter Password" class="form-control" name="password" required>
+                <input type="password" placeholder="Enter Password"  class="form-control" name="password" required>
             </div>
         </div>
         <div class="row">

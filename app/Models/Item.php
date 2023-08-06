@@ -24,4 +24,10 @@ class Item extends Model
     {
         return $this->belongsToMany(Order::class,'item_order')->withPivot('quantity');
     }
+
+    public function cart(): BelongsToMany
+    {
+        return $this->belongsToMany(Cart::class)->withPivot(['quantity']);
+    }
+
 }

@@ -1,10 +1,9 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
       integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
 <link href="{{asset('vendor/fontawesome-free/css/all.min.css')}}" rel="stylesheet" type="text/css">
 
 <section style="background-color: #eee; ">
-    <script> let userId = {{auth()->id()}}</script>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <div class="iphone">
         <div class="border">
             <div class="responsive-html5-chat">
@@ -12,6 +11,11 @@
         </div>
     </div>
 </section>
+
+<script>
+    const userId = "{{auth()->user()->id}}"
+</script>
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 
 <style>
     .border {
@@ -330,7 +334,7 @@
 
 </style>
 
-<script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+<script src="https://cresponsiveChatPushdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 
 <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
 <script src="{{asset('vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
@@ -339,14 +343,11 @@
 <script src="{{asset('vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
 
-<script src="{{asset('')}}"></script>
 <script>
     var pusher = new Pusher('22424c7e721c3213c490', {
         cluster: 'ap3'
     });
-
-    var channel = pusher.subscribe('App.Models.User.' + "{{ auth()->id() }}")
-
+    var channel = pusher.subscribe('App.Models.User.' + "{{ auth()->id() }}");
 
     function responsiveChat(element) {
 
@@ -362,7 +363,6 @@
                 .scrollTop($('.responsive-html5-chat .messages')[0]
                     .scrollHeight);
         }
-
 
         showLatestMessage(element);
 
@@ -406,23 +406,15 @@
             Pusher.logToConsole = true;
 
 
-            // channel.bind('chat', function(data) {
-            //
-            //     $(element + ' div.messages').append(
-            //         '<div class="message">' +
-            //         '<div class="fromThem">' +
-            //         '<p>' +
-            //         data.message.message+
-            //         '</p><date>' +
-            //         currentDate +
-            //         "</date></div></div>"
-            //     );
-            //     showLatestMessage(element)
-            // });
+
+            const existingMessageIds = $(element + ' .messages').children('.message').map(function () {
+                return $(this).data('message-id');
+            }).get();
+
 
             if ($(element + ' input[type="text"]').val()) {
                 let id = {{request('id')}}
-                axios.post('/messages/send/' + id, {
+                axios.post('/messages/respondToUser/' + id, {
                     headers: {
                         'X-socket-Id': pusher.connection.socket_id
                     },
@@ -440,11 +432,11 @@
                 }, 2000);
             }
             $(element + ' input[type="text"]').val("");
-            // showLatestMessage(element);
+            showLatestMessage(element);
         });
     }
 
-    function responsiveChatPush(element, sender, origin, date, message) {
+    function responsiveChatPush(element, sender, origin, date, message , messageId) {
         var originClass;
         if (origin == 'me') {
             originClass = 'myMessage';
@@ -452,7 +444,7 @@
             originClass = 'fromThem';
         }
         $(element + ' .messages')
-            .append('<div class="message"><div class="' + originClass + '"><p>' + message + '</p><date><b>' + sender + '</b> ' + date + '</date></div></div>');
+            .append('<div class="message" data-message-id="' + messageId + '"><div class="' + originClass + '"><p>' + message + '</p><date><b>' + sender + '</b> ' + date + '</date></div></div>');
     }
 
     /* Activating chatbox on element */
@@ -462,33 +454,19 @@
     responsiveChatPush('.chat', 'Kate',
         '{{$message->from_user == auth()->id() ? 'me' : 'you' }}',
         '{{$message->created_at->diffForHumans()}}',
-        '{{$message->message}}');
+        "{{$message->message}}",
+        '{{$message->id}}',
+    );
     @endforeach
     setTimeout(function () {
         $('.responsive-html5-chat')
             .find('.messages')
             .scrollTop($('.responsive-html5-chat .messages')[0]
                 .scrollHeight);
-    }, 50)
+    },50)
     /* DEMO */
     if (parent == top) {
         $("a.article").show();
     }
 
 </script>
-
-
-{{--<script>--}}
-{{--    let id = {{request('id')}};--}}
-
-{{--    $('#sendMessage').click(function () {--}}
-{{--        let message = $('#message').val()--}}
-
-{{--        axios.post('/messages/send/'+id, {--}}
-{{--            message: message--}}
-{{--        }).then((response) => {--}}
-{{--            $('#message').val('')--}}
-{{--            console.log(response)--}}
-{{--        });--}}
-{{--    });--}}
-{{--</script>--}}

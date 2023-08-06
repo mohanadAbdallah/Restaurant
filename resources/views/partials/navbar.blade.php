@@ -53,12 +53,16 @@
             </div>
         </li>
 
+
         <!-- Nav Item - Messages -->
+
+
         <li class="nav-item dropdown no-arrow mx-1">
             <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-envelope fa-fw"></i>
-
+                <!-- Counter - Messages -->
+                <span class="badge badge-danger badge-counter">7</span>
             </a>
             <!-- Dropdown - Messages -->
             <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -67,9 +71,15 @@
                     Message Center
                 </h6>
 
+
+               <div class="messages">
+
+               </div>
+
                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
             </div>
         </li>
+
 
         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -84,6 +94,10 @@
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                  aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="{{route('user.profile')}}">
+                    الملف الشخصي
+                    <i class="fas fa-person-booth -alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                </a>
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
                     تسجيل خروج
@@ -95,3 +109,52 @@
     </ul>
 
 </nav>
+
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+<script>
+    var pusher = new Pusher('22424c7e721c3213c490', {
+        cluster: 'ap3'
+    });
+
+    var channel =  pusher.subscribe('App.Models.User.'+"{{ auth()->id() }}")
+
+    channel.bind('chat', function(data) {
+
+        axios.get('/messages',  {
+            params:{
+                data:data.message
+            }
+        })
+            .then(response => {
+                console.log(response)
+                let className = 'user_'+data.message.from_user
+
+                if (!$('div.messages').find(`.${className}`).length){
+                    $('div.messages').append(
+                        `<div class= ${className} >` +
+                        '<a class="dropdown-item d-flex align-items-center chat-message-item" last-message='+data.message.message+' user-id='+data.message.from_user+' user-name='+ response.data.user.name +' href="javascript:void(0);">' +
+                        '<div class="dropdown-list-image mr-3 rounded-circle" style="background-color: #0a0c0d">' +
+                        '<div class="status-indicator bg-success"></div></div>' +
+                        '<div class="font-weight-bold">' +
+                        '<div class="text-truncate">' + data.message.message + '</div>' +
+                        '<div class="small text-gray-500"></div>' + response.data.user.name + ' </div>' +
+                        ' </a>' +
+                        '</div>'
+                )
+                }else {
+                    $(`.${className}`).html(
+                        '<a class="dropdown-item d-flex align-items-center chat-message-item" user-id='+data.message.from_user+' user-name='+ response.data.user.name +' href="javascript:void(0);">' +
+                        '<div class="dropdown-list-image mr-3 rounded-circle" style="background-color: #0a0c0d">' +
+                        '<div class="status-indicator bg-success"></div></div>' +
+                        '<div class="font-weight-bold">' +
+                        '<div class="text-truncate">' + data.message.message + '</div>' +
+                        '<div class="small text-gray-500"></div>' + response.data.user.name + ' </div>' +
+                        '</a>'
+                    )
+                }
+            });
+
+    });
+
+</script>

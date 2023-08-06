@@ -85,6 +85,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('users', UserController::class);
 
+        Route::get('customers',[UserController::class,'customers'])->name('auth.customers');
+
         Route::resource('roles', RoleController::class);
 
         //Restaurant
@@ -105,9 +107,18 @@ Route::middleware(['auth'])->group(function () {
     });
 
     Route::get('/{id}/chat', [ChatsController::class, 'index'])->name('chat.index');
-    Route::get('/messages', [ChatsController::class, 'fetchMessages'])->name('fetchMessages');
-    Route::post('/messages/{id}', [ChatsController::class, 'sendMessage'])->name('chat.message.send');
 
+    Route::get('/chat/respondToUser', [ChatsController::class, 'respondToUserChat'])->name('chat.respondToUserChat');
+
+
+    Route::get('/messages', [ChatsController::class, 'fetchMessages'])->name('fetchMessages');
+    Route::get('/getMessages', [ChatsController::class, 'getMessages'])->name('getMessages');
+
+    Route::get('/old-messages', [ChatsController::class, 'fetchOldMessages'])->name('fetchOldMessages');
+
+    Route::post('/messages/send/{id}', [ChatsController::class, 'sendMessage'])->name('chat.message.send');
+
+    Route::post('/messages/respondToUser/{id}', [ChatsController::class, 'respondToUser'])->name('chat.respondToUser');
 
 
     Route::post('/cart/add', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
@@ -124,8 +135,6 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('orders/{order}/pay/stripe/callback', [PaymentsController::class, 'confirm'])
         ->name('stripe.return');
-
-
 
 });
 

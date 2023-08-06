@@ -83,9 +83,10 @@
                     _token: '{{ csrf_token() }}',
                 },
                 success: function(response) {
+                    console.log(response)
                     if (response.login_required) {
                         window.location.href = '{{ route('user.login') }}';
-                    }else {
+                    } else {
                         alert(response.message);
                         window.location.reload();
                     }
@@ -93,7 +94,7 @@
                 },
                 error: function(error) {
                     if(error.status == 401) {
-                        // $('.show_login_modal').modal()
+
                         Swal.fire({
                             title: 'أنت غير مسجل دخول في الموقع ؟',
                             showCancelButton: true,

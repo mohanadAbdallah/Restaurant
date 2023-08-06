@@ -7,6 +7,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,17 +20,11 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
-    public function store(StoreUserRequest $request): RedirectResponse
+    public function store(StoreUserRequest $request): JsonResponse
     {
-        $validatedData = $request->validated();
-        $validatedData['password'] = Hash::make($request->password);
-        $validatedData['type'] = 0;
+        $user = User::create($request->validated());
 
-        $user = User::create($validatedData);
-        Auth::login($user);
-
-        event(new Registered($user));
-
-        return redirect(RouteServiceProvider::HOME);
+        $token = $user->createToken('Registration token')->plainTextToken;
+        return response()->json(['data' => $user, 'token' => $token, 'status' => true, 'message' => 'success']);
     }
 }

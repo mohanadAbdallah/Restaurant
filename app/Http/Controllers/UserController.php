@@ -26,15 +26,19 @@ class UserController extends Controller
         $userRole = auth()->user()->getRoleNames();
 
         if ($userRole->contains('Super Admin')) {
-            $users = $users->whereHas("roles", function ($q) {
-                $q->whereIn('name', ['Admin', 'Data Entry', 'Financial']);
-            })->get();
+            $users = $users->where('type','=','1')->get();
         }
         if (auth()->user()->restaurant) {
             $users = $users->where('restaurant_id', auth()->user()->restaurant->id)->with('roles')->get();
         }
 
         return view('auth.user.index', compact('users'));
+    }
+
+    public function customers(): View
+    {
+        $customers = User::where('type','=',0)->get();
+        return view('customers',compact('customers'));
     }
 
     public function create(): View
@@ -82,7 +86,9 @@ class UserController extends Controller
         $roles = $userRole->contains('super admin', $userRole)
             ? Role::where('name', 'Admin')->first('id')
             : $request->input('roles');
-
+        if ($request->ajax()){
+            $user->assignRole(2);
+        }
         $user->syncRoles($roles);
 
         $userPassword = $request->password;

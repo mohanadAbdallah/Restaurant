@@ -17,7 +17,7 @@
             <div class="dropdown" >
                 <a class="btn btn-outline-dark" style="font-size: 20px;" href="{{route('cart.view')}}">
                     <i class="fa fa-shopping-cart" ></i>
-                    Cart <span class="badge badge-danger">{{ count((array) session('cart')) }}</span>
+                    Cart <span class="badge badge-danger">{{ $cartCount ?? '0' }}</span>
                 </a>
             </div>
             @endif

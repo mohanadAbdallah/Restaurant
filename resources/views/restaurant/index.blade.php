@@ -45,7 +45,11 @@
                                         <td>{{$restaurant->name ?? ''}}</td>
                                         <td>{{$restaurant->phone ?? ''}}</td>
                                         <td>{{$restaurant->address ?? ''}}</td>
-                                        <td>{{$restaurant->user->name ?? ''}}</td>
+                                        <td>
+                                            <a href="{{route('users.show',$restaurant->user->id)}}" style="text-decoration: none">
+                                                {{$restaurant->user->name ?? ''}}
+                                            </a>
+                                          </td>
                                         <td>
                                             <img src="{{url("storage/images/".$restaurant->image ?? '')}}" width="50px">
                                         </td>

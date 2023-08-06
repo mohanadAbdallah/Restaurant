@@ -26,8 +26,9 @@
 
         </div>
         <!-- End of Main Content -->
+
         <script>
-            const userId = "{{auth()->id()}}"
+            const userId = "{{auth()->user()->id}}"
         </script>
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -74,6 +75,97 @@
 </div>
 
 @include('partials.scripts')
-</body>
 
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+
+</body>
+<script>
+    var pusher = new Pusher('22424c7e721c3213c490', {
+        cluster: 'ap3'
+    });
+    var channel = pusher.subscribe('App.Models.User.' + "{{ auth()->id() }}")
+
+    var user_id = '';
+    $(document).on('keyup','#message-input',function (event) {
+        if (event.which == 13 && $(this).val() != '') {
+            $('#message-list').append(
+                '<div class="me">' +
+                '<span>' +
+                $(this).val()
+                +'</span>' +
+                '<br>'
+                +'</div>'
+            );
+            var message = $(this).val();
+            $('#message-input').val('')
+            $('#message-list').scrollTop($('#message-list')[0]
+                .scrollHeight);
+            axios.post('/messages/respondToUser/' + user_id, {
+                headers: {
+                    'X-socket-Id': pusher.connection.socket_id
+                },
+                message: message
+            }).then((response) => {
+
+
+            });
+            return false;
+
+        }
+    });
+    $(document).on('click','header',function (){
+        $('.chat-box').toggleClass('opened');
+        $('.close-button').toggleClass('show');
+    });
+
+    $(document).on('click','.chat-message-item',function () {
+        console.log('hello')
+        $('.chat-box').addClass('opened');
+        $('.close-button').addClass('show')
+        $('.chat-user-name').text($(this).attr('user-name'));
+         user_id = $(this).attr('user-id');
+
+         axios.get('/getMessages',{
+             params:{
+                 user_id
+             }
+         }).then(response => {
+             const userId = $(this).attr('user-id');
+             console.log(userId)
+             for (let i = 0; i < response.data.messages.length; i++) {
+                 // console.log(from_user)
+                 $('#message-list').append(
+                     `<div class="${(response.data.messages[i].from_user  === parseInt(userId)) ? 'not-me': 'me'}">` +
+                     '<span>' +
+                     response.data.messages[i].message
+                     +'</span>' +
+                     '<br>'
+                     +'</div>'
+                 );
+                 $('#message-list').scrollTop($('#message-list')[0].scrollHeight);
+             }
+
+         })
+
+
+        channel.bind('chat', function (data) {
+            console.log('chat',data)
+            if(data.message.from_user == user_id){
+                $('#message-list').append(
+                    '<div class="not-me">' +
+                    '<span>' +
+                    data.message.message
+                    +'</span>' +
+                    '<br>'
+                    +'</div>'
+                );
+                $('#message-list').scrollTop($('#message-list')[0]
+                    .scrollHeight);
+            }
+
+        });
+
+        return false;
+    })
+</script>
 </html>

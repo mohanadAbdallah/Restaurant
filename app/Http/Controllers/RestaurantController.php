@@ -45,9 +45,14 @@ class RestaurantController extends Controller
             $validatedData['image'] = $imageName;
         }
 
+
         $restaurant= Restaurant::create($validatedData);
 
         $user = User::findOrFail($request->input('user_id'));
+
+        $user->update([
+            'restaurant_id' => $restaurant->id
+        ]);
 
         return redirect()->route('restaurant.index')->with('status','تمت عملية إضافة مطعم بنجاح');
     }

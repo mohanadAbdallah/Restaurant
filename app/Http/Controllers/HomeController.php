@@ -22,11 +22,7 @@ class HomeController extends Controller
 
     public function showRestaurant(Restaurant $restaurant): View
     {
-        // message is being sent
-//        $restaurant = \request('restaurant');
-//        $user = $restaurant->user_id;
-//
-//        dd($user);
+
         $items = Item::where('restaurant_id',$restaurant->id)->get();
         $categories = Category::where('restaurant_id',$restaurant->id)->get();
 

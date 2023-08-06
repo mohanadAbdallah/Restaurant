@@ -71,7 +71,6 @@
                 <button type="submit" id="submit" class="btn btn-success">
                     <span id="button-text">Pay now</span>
                     <div class="spinner hidden" id="spinner"></div>
-
                 </button>
 
                 <div id="payment-message" style="display: none" class="alert alert-info"></div>

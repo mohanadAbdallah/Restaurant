@@ -15,7 +15,7 @@ class ItemController extends Controller
 
     public function index(): View
     {
-        $this->authorize('viewAny', \auth()->user());
+//        $this->authorize('viewAny', \auth()->user());
 
         $items = Item::where('restaurant_id',auth()->user()->restaurant->id)->get();
         return view('item.index', compact('items'));
@@ -27,7 +27,7 @@ class ItemController extends Controller
      */
     public function create(): View
     {
-        $this->authorize('create', \auth()->user());
+//        $this->authorize('create', \auth()->user());
 
         $categories = auth()->user()->restaurant->categories;
         return view('item.create', compact('categories'));
@@ -35,7 +35,7 @@ class ItemController extends Controller
 
     public function store(ItemRequest $request): RedirectResponse
     {
-        $this->authorize('create', \auth()->user());
+//        $this->authorize('create', \auth()->user());
         $validatedData = $request->validated();
         $validatedData['category_id'] = $request->category_id;
 
@@ -64,7 +64,7 @@ class ItemController extends Controller
 
     public function edit(Item $item): View
     {
-        $this->authorize('update', \auth()->user());
+//        $this->authorize('update', \auth()->user());
 
         $categories = auth()->user()->restaurant->categories->whereNotNull('parent_id');
         return view('item.edit', compact('item','categories'));
@@ -72,7 +72,7 @@ class ItemController extends Controller
 
     public function update(ItemRequest $request, Item $item): RedirectResponse
     {
-        $this->authorize('update', \auth()->user());
+//        $this->authorize('update', \auth()->user());
         $old_image = $item->image;
 
         $validatedDate = $request->validated();
@@ -95,7 +95,7 @@ class ItemController extends Controller
      */
     public function destroy(Item $item): RedirectResponse
     {
-        $this->authorize('delete', \auth()->user());
+//        $this->authorize('delete', \auth()->user());
 
         $item->delete();
         return redirect()->back()->with('status', 'تم الحذف بنجاح');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewMessageNotification;
+use App\Models\Cart;
 use App\Models\Item;
 use App\Models\Message;
 use App\Models\Order;
@@ -52,19 +53,18 @@ class OrderController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $cart = $request->session()->get('cart', []);
         $orderTotal = 0;
-        $restaurantAdmin = null;
+        $restaurantAdmin = [];
 
-        foreach ($cart as $itemId => $result) {
-            $item = Item::find($itemId);
-            $restaurant_id =$item->restaurant_id;
+        $dbCart = Cart::where('user_id',auth()->id())->with('items')->first();
 
+        foreach ($dbCart->items as $item){
 
-            $restaurantAdmin = User::where('restaurant_id',$restaurant_id)->first();
+            $restaurant_id = $item->restaurant_id;
+            $restaurantAdmin[] = User::where('restaurant_id',$restaurant_id)->first();
 
             if ($item) {
-                $orderTotal += $item->price * $result['quantity'];
+                $orderTotal += $item->price * $item->pivot->quantity;
             }
         }
 
@@ -74,14 +74,11 @@ class OrderController extends Controller
             'status' => 2,
         ]);
 
-        $restaurantAdmin->notify((new orderCreatedNotification($order)));
+        Notification::send($restaurantAdmin, new orderCreatedNotification($order));
 
-        // Notification::send($restaurantAdmin, new orderCreatedNotification($order));
-
-        foreach ($cart as $itemId => $result) {
-            $item = Item::find($itemId);
+        foreach ($dbCart->items as $item) {
             if ($item) {
-                $order->items()->attach($item->id, ['quantity' => $result['quantity'], 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+                $order->items()->attach($item->id, ['quantity' => $item->pivot->quantity, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
             }
         }
 

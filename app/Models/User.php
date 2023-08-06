@@ -71,4 +71,9 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(Message::class);
 
     }
+
+    public function cart(): HasOne
+    {
+        return $this->hasOne(Cart::class);
+    }
 }

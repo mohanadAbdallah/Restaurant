@@ -31,23 +31,23 @@
 
 
 @php $total = 0 @endphp
-@if(session('cart'))
-    @foreach(session('cart') as $id => $details)
-
-        <tr data-id ="{{ $id }}">
+{{--@if(session('cart'))--}}
+@if($cart)
+    @foreach($cart->items as $item)
+        <tr data-id ="{{ $item->id }}">
             <td data-th="Product">
                 <div class="row">
                     <div class="col-sm-9">
-                        <h4 class="nomargin">{{ $details['name'] }}</h4>
+                        <h4 class="nomargin">{{ $item->name }}</h4>
                     </div>
                 </div>
             </td>
-            <td data-th="Price">₪ {{ $details['price'] }}</td>
+            <td data-th="Price">₪ {{ $item->price }}</td>
             <td data-th="Quantity">
-                <input type="number" value="{{ $details['quantity'] }}" class="form-control quantity update-cart" />
+                <input type="number" value="{{ $item->pivot->quantity ?? '--' }}" class="form-control quantity update-cart" />
             </td>
 
-            <td data-th="Subtotal" class="text-center">₪ {{ $details['price'] * $details['quantity'] }}</td>
+            {{--            <td data-th="Subtotal" class="text-center">₪ {{ $details['price'] * $details['quantity'] }}</td>--}}
 
             <td class="actions">
                 <a class="btn btn-danger btn-sm delete-product">
@@ -56,9 +56,11 @@
         </tr>
     @endforeach
 
-@else
-    <p>Your cart is empty.</p>
 @endif
+
+{{--@else--}}
+{{--    <p>Your cart is empty.</p>--}}
+{{--@endif--}}
     </tbody>
     <tfoot>
     <tr>

@@ -4,17 +4,20 @@ namespace App\Events;
 
 use App\Models\Message;
 
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class NewMessageNotification implements ShouldBroadcastNow
+class NewMessageNotification implements ShouldBroadcast
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels,Queueable;
 
-    public $message;
+    public Message $message;
 
     /**
      * Create a new event instance.
@@ -33,7 +36,14 @@ class NewMessageNotification implements ShouldBroadcastNow
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('App.Models.User.'.$this->message->to_user),
+            new Channel('App.Models.User.' . $this->message->to_user),
         ];
     }
+
+    public function broadcastAs()
+    {
+        return 'chat';
+    }
+
+
 }

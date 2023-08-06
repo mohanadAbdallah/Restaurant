@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Stripe\Exception\ApiErrorException;
+use Stripe\StripeClient;
 
 class PaymentsController extends Controller
 {
@@ -15,13 +18,14 @@ class PaymentsController extends Controller
         return view('home.payments.create', compact('order'));
     }
 
+
     /**
-     * @throws \Stripe\Exception\ApiErrorException
+     * @throws ApiErrorException
      */
-   public function createStripePaymentIntent(Order $order)
+    public function createStripePaymentIntent(Order $order): array
 
     {
-        $stripe = new \Stripe\StripeClient(config('services.stripe.secret_key'));
+        $stripe = new StripeClient(config('services.stripe.secret_key'));
 
         $paymentIntent = $stripe->paymentIntents->create([
             'amount' => $order->total * 100,
@@ -48,9 +52,12 @@ class PaymentsController extends Controller
 
     }
 
+    /**
+     * @throws ApiErrorException
+     */
     public function confirm(Request $request, Order $order): RedirectResponse
     {
-        $stripe = new \Stripe\StripeClient(config('services.stripe.secret_key'));
+        $stripe = new StripeClient(config('services.stripe.secret_key'));
 
         $paymentIntent = $stripe->paymentIntents->retrieve(
             $request->query('payment_intent'),
@@ -64,16 +71,15 @@ class PaymentsController extends Controller
             ])->save();
 
             $order->forceFill([
-                'status'=> '1'
+                'status' => '1'
             ])->save();
-
-            $request->session()->forget('cart');
+            Cart::where('user_id',auth()->id())->delete();
 
             return redirect()->route('home')->with('status', 'payment-succeed');
         }
         return redirect()->route('orders.payments.create', [
-                'order' => $order->id,
-                'status' => $paymentIntent->status,
-            ]);
+            'order' => $order->id,
+            'status' => $paymentIntent->status,
+        ]);
     }
 }
