@@ -46,6 +46,5 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::delete('delete-from-cart', [CartController::class, 'deleteFromCart'])->name('delete_from_cart');
 
-    Route::post('orders/{order}/stripe/payment-intent', [PaymentController::class, 'createStripePaymentIntent'])
-        ->name('stripe.paymentIntent.create');
+    Route::post('orders/{order}/stripe/payment-intent', [PaymentController::class, 'createStripePaymentIntent']);
 });

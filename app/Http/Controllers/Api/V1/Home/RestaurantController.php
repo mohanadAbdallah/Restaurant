@@ -14,7 +14,6 @@ class RestaurantController extends ApiController
 
     public function index(): JsonResponse
     {
-        dd(auth()->user());
         $restaurants= Restaurant::all();
         return $this->showAll($restaurants);
 
