@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Home;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Resources\RestaurantResource;
 use App\Models\Category;
 use App\Models\Item;
 use App\Models\Restaurant;
@@ -14,23 +15,17 @@ class RestaurantController extends ApiController
 
     public function index(): JsonResponse
     {
-        $restaurants= Restaurant::all();
-        return $this->showAll($restaurants);
+        return $this->successResponse(RestaurantResource::collection(Restaurant::all()), 200);
 
     }
 
     public function show(Restaurant $restaurant): JsonResponse
     {
-        $items = Item::where('restaurant_id',$restaurant->id)->get();
-        $categories = Category::where('restaurant_id',$restaurant->id)->get();
+        $restaurant->load('categories.items');
 
-        $data = [
-            'restaurant' => $restaurant,
-            'items' => $items,
-            'categories' => $categories,
-        ];
-
-        return $this->showAll(new Collection($data));
+        return $this->successResponse([
+            'restaurant'=> new RestaurantResource($restaurant),
+        ],200);
     }
 
 }
