@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id');
             $table->foreignId('item_id');
-            $table->float('price');
+            $table->float('price')->nullable();
             $table->integer('quantity')->unsigned();
             $table->timestamps();
         });

@@ -78,7 +78,7 @@ class OrderController extends Controller
 
         foreach ($dbCart->items as $item) {
             if ($item) {
-                $order->items()->attach($item->id, ['quantity' => $item->pivot->quantity, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+                $order->items()->attach($item->id, ['quantity' => $item->pivot->quantity, 'cost'=> $item->price , 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
             }
         }
 

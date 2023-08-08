@@ -44,10 +44,12 @@
             </td>
             <td data-th="Price">₪ {{ $item->price }}</td>
             <td data-th="Quantity">
-                <input type="number" value="{{ $item->pivot->quantity ?? '--' }}" class="form-control quantity update-cart" />
+
+                    <input type="number" value="{{ $item->pivot->quantity ?? '--' }}" class="form-control quantity update-cart" />
+
             </td>
 
-            {{--            <td data-th="Subtotal" class="text-center">₪ {{ $details['price'] * $details['quantity'] }}</td>--}}
+                        <td data-th="Subtotal" class="text-center">₪ {{ $item->price * $item->pivot->quantity }}</td>
 
             <td class="actions">
                 <a class="btn btn-danger btn-sm delete-product">

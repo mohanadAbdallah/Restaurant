@@ -27,13 +27,14 @@ class CartController extends Controller
 
             if ($cart && $cart->items()->where('item_id', $item->id)->exists()) {
                 $cart->items()->sync([
-                    $item->id => ['quantity' => DB::raw('quantity + 1')]
+                    $item->id => ['quantity' => DB::raw('quantity + 1'),'cost' => $item->price ]
                 ], false);
             } else {
                 if ($cart && $cart->where('user_id', auth()->id())->exists()) {
                     $cart->items()->attach(
                         $item->id, [
                         'quantity' => 1,
+                        'cost' =>$item->price,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);
@@ -45,6 +46,7 @@ class CartController extends Controller
                     $cart->items()->attach(
                         $item->id, [
                         'quantity' => 1,
+                        'cost' =>$item->price,
                         'created_at' => Carbon::now(),
                         'updated_at' => Carbon::now()
                     ]);

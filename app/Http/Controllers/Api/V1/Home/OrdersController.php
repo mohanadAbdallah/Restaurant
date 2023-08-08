@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\v1\Home;
 
 use App\Http\Controllers\ApiController;
+use App\Http\Resources\CartResource;
+use App\Http\Resources\OrdersResource;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\User;
@@ -10,6 +12,7 @@ use App\Notifications\orderCreatedNotification;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Notification;
 
 class OrdersController extends ApiController
@@ -18,10 +21,9 @@ class OrdersController extends ApiController
     public function index(): JsonResponse
     {
         $orders = auth()->user()->orders;
+        $orders->load('items');
 
-        return response()->json([
-           'orders' => $orders
-        ]);
+        return $this->successResponse(OrdersResource::collection($orders), 200);
     }
 
     public function store(): JsonResponse
@@ -29,12 +31,12 @@ class OrdersController extends ApiController
         $orderTotal = 0;
         $restaurantAdmin = [];
 
-        $dbCart = Cart::where('user_id',auth()->id())->with('items')->first();
+        $dbCart = Cart::where('user_id', auth()->id())->with('items')->first();
 
-        foreach ($dbCart->items as $item){
+        foreach ($dbCart->items as $item) {
 
             $restaurant_id = $item->restaurant_id;
-            $restaurantAdmin[] = User::where('restaurant_id',$restaurant_id)->first();
+            $restaurantAdmin[] = User::where('restaurant_id', $restaurant_id)->first();
 
             if ($item) {
                 $orderTotal += $item->price * $item->pivot->quantity;
@@ -45,10 +47,17 @@ class OrdersController extends ApiController
             'total' => $orderTotal,
             'status' => 2,
         ]);
+
         Notification::send($restaurantAdmin, new orderCreatedNotification($order));
+
         foreach ($dbCart->items as $item) {
             if ($item) {
-                $order->items()->attach($item->id, ['quantity' => $item->pivot->quantity, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
+                $order->items()->attach($item->id, [
+                    'quantity' => $item->pivot->quantity,
+                    'cost' => $item->price,
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
+                ]);
             }
         }
 
@@ -61,9 +70,7 @@ class OrdersController extends ApiController
 
     public function show(Order $order): JsonResponse
     {
-        return response()->json([
-          'order' => $order
-        ]);
+        return $this->successResponse($order, 200);
     }
 
     public function update(Request $request, Order $order)
@@ -72,7 +79,7 @@ class OrdersController extends ApiController
     }
 
 
-    public function destroy(Order $order): \Illuminate\Http\Response
+    public function destroy(Order $order): Response
     {
         $order->delete();
 

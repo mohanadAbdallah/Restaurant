@@ -9,12 +9,14 @@ use App\Models\Item;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends ApiController
 {
 
     public function index(): JsonResponse
     {
+
         $cart = Cart::where('user_id', auth()->id())->first();
 
         return $this->showOne($cart);
@@ -31,13 +33,13 @@ class CartController extends ApiController
         $cart = Cart::where('user_id', auth()->id())->first();
 
         if ($cart && $cart->items()->where('item_id', $item->id)->exists()) {
-            if ($request->quantity == 0){
+            if ($request->quantity == 0) {
                 $cart->items()->detach([
                     $item->id
                 ]);
-            }else{
+            } else {
                 $cart->items()->sync([
-                    $item->id => ['quantity' => $request->quantity]
+                    $item->id => ['quantity' => $request->quantity, 'cost' => $item->price]
                 ], false);
             }
 
@@ -46,6 +48,7 @@ class CartController extends ApiController
                 $cart->items()->attach(
                     $item->id, [
                     'quantity' => 1,
+                    'cost' => $item->price,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
@@ -57,6 +60,7 @@ class CartController extends ApiController
                 $cart->items()->attach(
                     $item->id, [
                     'quantity' => 1,
+                    'cost' => $item->price,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
@@ -64,7 +68,7 @@ class CartController extends ApiController
 
         }
         $cart->load('items');
-        return $this->successResponse(['cart'=>new CartResource($cart)],200);
+        return $this->successResponse(['cart' => new CartResource($cart)], 200);
         //CartItemResource::collection
     }
 
