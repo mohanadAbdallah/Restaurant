@@ -31,7 +31,7 @@ class OrdersController extends ApiController
         $orderTotal = 0;
         $restaurantAdmin = [];
 
-        $dbCart = Cart::where('user_id', auth()->id())->with('items')->first();
+        $dbCart = auth()->user()->cart()->with('items')->first();
 
         foreach ($dbCart->items as $item) {
 
@@ -51,14 +51,12 @@ class OrdersController extends ApiController
         Notification::send($restaurantAdmin, new orderCreatedNotification($order));
 
         foreach ($dbCart->items as $item) {
-            if ($item) {
                 $order->items()->attach($item->id, [
                     'quantity' => $item->pivot->quantity,
                     'cost' => $item->price,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()
                 ]);
-            }
         }
 
         return response()->json([

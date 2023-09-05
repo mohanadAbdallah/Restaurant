@@ -19,7 +19,7 @@ class CartController extends ApiController
 
         $cart = Cart::where('user_id', auth()->id())->first();
 
-        return $this->showOne($cart);
+        return $this->successResponse($cart,200);
     }
 
     public function store(Request $request): JsonResponse
@@ -38,9 +38,9 @@ class CartController extends ApiController
                     $item->id
                 ]);
             } else {
-                $cart->items()->sync([
-                    $item->id => ['quantity' => $request->quantity, 'cost' => $item->price]
-                ], false);
+                $cart->items()->updateExistingPivot($item->id ,[
+                    'quantity' => $request->quantity
+                ]);
             }
 
         } else {
@@ -68,8 +68,8 @@ class CartController extends ApiController
 
         }
         $cart->load('items');
+
         return $this->successResponse(['cart' => new CartResource($cart)], 200);
-        //CartItemResource::collection
     }
 
 }

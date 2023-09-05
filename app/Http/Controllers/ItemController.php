@@ -13,11 +13,14 @@ use Illuminate\View\View;
 class ItemController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->authorizeResource(Item::class, 'item');
+    }
+
     public function index(): View
     {
-//        $this->authorize('viewAny', \auth()->user());
-
-        $items = Item::where('restaurant_id',auth()->user()->restaurant->id)->get();
+        $items = Item::where('restaurant_id', auth()->user()->restaurant->id)->get();
         return view('item.index', compact('items'));
 
     }
@@ -27,15 +30,13 @@ class ItemController extends Controller
      */
     public function create(): View
     {
-//        $this->authorize('create', \auth()->user());
-
-        $categories = auth()->user()->restaurant->categories;
+        $categories = auth()->user()->restaurant->categories->whereNotNull('parent_id');
         return view('item.create', compact('categories'));
     }
 
     public function store(ItemRequest $request): RedirectResponse
     {
-//        $this->authorize('create', \auth()->user());
+
         $validatedData = $request->validated();
         $validatedData['category_id'] = $request->category_id;
 
@@ -44,12 +45,12 @@ class ItemController extends Controller
         if ($request->hasFile('image')) {
 
             $imageName = $request->image->getClientOriginalName();
-            $request->file('image')->store('images', 'public');
+            $request->file('image')->storeAs('images', $imageName, 'public');
 
             $validatedData['image'] = $imageName;
         }
 
-        $item =Item::create($validatedData);
+        $item = Item::create($validatedData);
         $category = Category::findOrFail($request->category_id);
 
         $item->categories()->attach($category, ['created_at' => Carbon::now(), 'updated_at' => Carbon::now()]);
@@ -64,30 +65,25 @@ class ItemController extends Controller
 
     public function edit(Item $item): View
     {
-//        $this->authorize('update', \auth()->user());
-
         $categories = auth()->user()->restaurant->categories->whereNotNull('parent_id');
-        return view('item.edit', compact('item','categories'));
+        return view('item.edit', compact('item', 'categories'));
     }
 
     public function update(ItemRequest $request, Item $item): RedirectResponse
     {
-//        $this->authorize('update', \auth()->user());
-        $old_image = $item->image;
-
         $validatedDate = $request->validated();
-        if ($request->hasFile('image')){
-            $image_name = $request->input('image')->getClientOriginalName();
 
-            $request->file('image')->store('images', 'public');
+        if ($request->hasFile('image')) {
+
+            $image_name = $request->image->getClientOriginalName();
+            $request->file('image')->storeAs('images', $image_name, 'public');
             $item->image = $image_name;
+            $validatedDate['image'] = $image_name;
         }
 
         $item->update($validatedDate);
-        if ($old_image && $validatedDate['image']){
-            Storage::disk('public')->delete($old_image);
-        }
-        return redirect()->route('items.index')->with('status','تم التحديث بنجاح');
+
+        return redirect()->route('items.index')->with('status', 'تم التحديث بنجاح');
     }
 
     /**
@@ -95,8 +91,6 @@ class ItemController extends Controller
      */
     public function destroy(Item $item): RedirectResponse
     {
-//        $this->authorize('delete', \auth()->user());
-
         $item->delete();
         return redirect()->back()->with('status', 'تم الحذف بنجاح');
     }

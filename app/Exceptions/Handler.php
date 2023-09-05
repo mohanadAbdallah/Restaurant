@@ -2,9 +2,13 @@
 
 namespace App\Exceptions;
 
+use App\Helpers\apiResponse;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
@@ -29,13 +33,29 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
-        $this->renderable(function (Exception  $e, Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'message' => $e->getMessage()
-                ], 500);
-            }
-        });
 
     }
+
+    /**
+     * Prepare a JSON response for the given exception.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \Throwable $e
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function prepareJsonResponse($request, Throwable $e): JsonResponse
+    {
+        if ($e instanceof AuthenticationException) {
+            return apiResponse::errorResponse('Authentication failed: Unauthenticated', 401);
+        } elseif ($e instanceof AuthorizationException) {
+            return apiResponse::errorResponse('Authorization failed: Unauthorized', 403);
+        } elseif ($e instanceof NotFoundHttpException) {
+            return apiResponse::errorResponse('Resource not found: Model not found', 404);
+        } elseif ($e instanceof ValidationException) {
+            return apiResponse::errorResponse('Validation failed', 422);
+        } else {
+            return apiResponse::errorResponse('Server error: An unexpected error occurred',500);
+        }
+    }
+
 }

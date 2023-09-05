@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Mail\registeredUserEmail;
+use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
@@ -16,10 +17,13 @@ use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(User::class, 'user');
+    }
 
     public function index(): View
     {
-        $this->authorize('viewAny', \auth()->user());
 
         $users = User::query();
 
@@ -43,7 +47,6 @@ class UserController extends Controller
 
     public function create(): View
     {
-        $this->authorize('create', \auth()->user());
 
         $roles = Role::where('name', '!=', 'Super Admin')->get();
 
@@ -55,8 +58,6 @@ class UserController extends Controller
      */
     public function store(StoreUserRequest $request)
     {
-        $this->authorize('create', \auth()->user());
-
         $validatedData = $request->validated();
 
         if ($request->filled('password')) {
@@ -112,16 +113,12 @@ class UserController extends Controller
 
     public function edit(User $user): View
     {
-        $this->authorize('update', [$user, \auth()->user()]);
-
         $roles = Role::where('name', '!=', 'Super Admin')->get();
         return \view('auth.user.edit', compact('user', 'roles'));
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $this->authorize('update', [$user, \auth()->user()]);
-
         $old_image = $user->image;
 
         $user->name = $request->name;
@@ -152,8 +149,6 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
-        $this->authorize('delete', [$user, \auth()->user()]);
-
         $user->delete();
         return redirect()->back()->with('status', 'Deleted Successfully');
     }

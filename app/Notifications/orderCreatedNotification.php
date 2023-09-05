@@ -32,7 +32,7 @@ class orderCreatedNotification extends Notification implements ShouldBroadcast
         return ['mail', 'database','broadcast'];
     }
 
-    public function toDatabase(object $notifiable)
+    public function toDatabase(object $notifiable): array
     {
         return [
             'id' => $this->order->id,

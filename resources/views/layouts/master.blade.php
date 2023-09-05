@@ -30,6 +30,7 @@
         <script>
             const userId = "{{auth()->user()->id}}"
         </script>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <!-- Footer -->

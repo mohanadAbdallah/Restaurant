@@ -33,9 +33,9 @@
                                 </thead>
                                 <tbody>
                                 @if($categories)
-                                    <?php $_SESSION['i'] = 0 ?>
+                                        <?php $_SESSION['i'] = 0 ?>
                                     @foreach($categories as $category)
-                                        <?php $_SESSION['i'] = $_SESSION['i'] + 1 ?>
+                                            <?php $_SESSION['i'] = $_SESSION['i'] + 1 ?>
                                         <tr>
                                             <td>{{$_SESSION['i']}}</td>
                                             <td>
@@ -128,13 +128,15 @@
             flex-direction: row;
         }
     </style>
+
+
     <script>
+
         function delete_item(id) {
             $('#category_id').val(id);
             var url = "{{url('dashboard/categories')}}/" + id;
             $('#delete_form').attr('action', url);
         }
-
 
 
     </script>

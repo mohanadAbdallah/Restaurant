@@ -21,13 +21,4 @@ trait ApiResponser
         ], $code);
     }
 
-    protected function showAll(Collection $collection = null, $code = 200): JsonResponse
-    {
-        return $this->successResponse(['data' => $collection], $code);
-    }
-
-    protected function showOne(Model $model = null, $code = 200): JsonResponse
-    {
-            return $this->successResponse(['data' => $model], $code);
-    }
 }

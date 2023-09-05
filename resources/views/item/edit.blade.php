@@ -34,6 +34,9 @@
                         <div class="col-sm-6">
                             <img src="#" alt="Uploaded Image" id="previewImage"
                                  style="display: none;max-width: 75px;max-height: 75px;border-radius: 5px;margin: 18px 150px -37px 0;">
+                            @if($item->image != null)
+                                <img src="{{url("storage/images/".$item->image ?? '')}}" alt="Uploaded Image" id="ItemImage" style="display: block;max-width: 100px;max-height: 100px;border-radius: 5px;margin: 18px 150px -37px 0;">
+                            @endif
                         </div>
                     </div>
                     <div class="form-group row ">
@@ -86,6 +89,8 @@
             reader.onload = function (e) {
                 document.getElementById('previewImage').setAttribute('src', e.target.result);
                 document.getElementById('previewImage').style.display = 'block';
+                document.getElementById('ItemImage').style.display = 'none';
+
             }
 
             reader.readAsDataURL(file);

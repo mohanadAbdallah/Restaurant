@@ -6,23 +6,24 @@ use App\Http\Requests\RestaurantRequest;
 use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class RestaurantController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Restaurant::class, 'restaurant');
+    }
+
     public function index(): View
     {
-        $this->authorize('viewAny', \auth()->user());
-
         $restaurants = Restaurant::all();
+
         return view('restaurant.index', compact('restaurants'));
     }
 
     public function create(): View
     {
-        $this->authorize('create', \auth()->user());
-
         $users = User::where('type', 1)
             ->WhereDoesntHave('restaurant')
             ->whereHas('roles', function ($query) {
@@ -34,8 +35,6 @@ class RestaurantController extends Controller
 
     public function store(RestaurantRequest $request): RedirectResponse
     {
-        $this->authorize('create', \auth()->user());
-
         $validatedData = $request->validated();
 
         if (request()->hasFile('image')) {
@@ -59,35 +58,26 @@ class RestaurantController extends Controller
 
     public function show(Restaurant $restaurant): View
     {
-        $this->authorize('view', $restaurant);
         return view('restaurant.show', compact('restaurant'));
     }
 
     public function edit(Restaurant $restaurant): View
     {
-        $this->authorize('update', [$restaurant, \auth()->user()]);
-
         return view('restaurant.edit', compact('restaurant'));
     }
 
     public function update(RestaurantRequest $request, Restaurant $restaurant): RedirectResponse
     {
-        $this->authorize('update', [$restaurant, \auth()->user()]);
-
         $validatedData = $request->validated();
-        $old_image = $restaurant->image;
 
         if ($request->hasFile('image')) {
             $imageName = $request->image->getClientOriginalName();
 
-            $request->file('image')->store('images','public');
+            $request->file('image')->storeAs('images', $imageName,'public');
             $validatedData['image'] = $imageName;
         }
-        $restaurant->update($validatedData);
-        if ($old_image && isset($validatedData['image'])){
-            Storage::disk('public')->delete($old_image);
-        }
 
+        $restaurant->update($validatedData);
 
         return auth()->user()->hasRole('Super Admin')
             ? redirect()->route('restaurant.index')->with('status', 'تم التحديث بنجاح')
@@ -96,8 +86,6 @@ class RestaurantController extends Controller
 
     public function destroy(Restaurant $restaurant): RedirectResponse
     {
-        $this->authorize('delete', \auth()->user());
-
         $restaurant->delete();
         return redirect()->route('restaurant.index')->with('status', 'تمت عملية الحذف بنجاح.');
     }

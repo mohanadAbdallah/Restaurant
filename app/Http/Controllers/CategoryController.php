@@ -13,7 +13,10 @@ use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->authorizeResource(Category::class, 'category');
+    }
 
     public function index(): View
     {
@@ -21,10 +24,10 @@ class CategoryController extends Controller
         $restaurant = auth()->user()->restaurant;
 
         $categories = null;
+
         if ($restaurant){
             $categories = $restaurant->categories()->get();
         }
-
 
         return view('category.index', compact('categories','user_id'));
     }
@@ -48,18 +51,22 @@ class CategoryController extends Controller
             'title' => ['required', 'string', 'unique:categories'],
         ]);
 
+
         $validatedData['slug'] = Str::slug($validatedData['title']);
         $validatedData['restaurant_id'] = auth()->user()->restaurant->id;
 
-        if ($request->hasFile('image') && $request->image != null) {
+        if ($request->hasFile('image')) {
+
             $imageName = $request->image->getClientOriginalName();
-            $request->image->storeAs('public/images', $imageName);
+            $request->file('image')->storeAs('images',$imageName,'public');
 
             $validatedData['image'] = $imageName;
+
         }
 
         if ($request->filled('parent_id')) {
             $validatedData['parent_id'] = $request->input('parent_id');
+
         }
 
         if ($parent_id){
@@ -87,6 +94,14 @@ class CategoryController extends Controller
         $validatedData = $request->validate([
             'title' => ['required', 'string']
         ]);
+
+        if ($request->hasFile('image') && $request->image != null) {
+            $imageName = $request->image->getClientOriginalName();
+            $request->file('image')->storeAs('images',$imageName,'public');
+
+            $validatedData['image'] = $imageName;
+        }
+
         $category->update($validatedData);
         return redirect()->route('categories.index')->with('status', 'Category Updated Successfully.');
     }

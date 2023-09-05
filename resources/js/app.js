@@ -1,6 +1,6 @@
 import './bootstrap';
 
- Echo.channel('App.Models.User.' + userId)
+Echo.channel('App.Models.User.' + userId)
      .listen('.chat',(event) => {
              $('.responsive-html5-chat div.messages').append(
                  '<div class="message" data-message-id="' + event.message.id + '">' +

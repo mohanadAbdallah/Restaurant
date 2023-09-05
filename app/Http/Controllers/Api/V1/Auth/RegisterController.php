@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Helpers\apiResponse;
 use App\Http\Controllers\ApiController;
 use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
@@ -21,7 +22,7 @@ class RegisterController extends ApiController
             'user' => $user,
             'token' => $token,
             ];
-        return $this->showAll(new Collection($data));
+        return apiResponse::successResponse(new Collection($data),200);
 
     }
 }

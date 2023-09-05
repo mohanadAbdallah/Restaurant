@@ -58,7 +58,8 @@ class HomeController extends Controller
     public function showCategory(Category $category): View
     {
 
-        $items = Item::where('category_id',$category->id)->get();
+        $items = Item::where('category_id',$category->id)
+            ->where('restaurant_id',$category->restaurant_id)->get();
 
         return \view('home.restaurant.categories',compact('items'));
     }

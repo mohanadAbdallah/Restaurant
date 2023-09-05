@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1\Auth;
 
+use App\Helpers\apiResponse;
 use App\Http\Controllers\Controller;
-use App\Traits\ApiResponser;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -14,8 +14,6 @@ use Illuminate\Support\Str;
 
 class AuthenticateController extends Controller
 {
-    use ApiResponser;
-
     public function login(Request $request): JsonResponse
     {
         $credentials = $request->validate([
@@ -29,21 +27,21 @@ class AuthenticateController extends Controller
         }
         $token = $user->createToken('Registration token')->plainTextToken;
 
-        return $this->successResponse(['user' => $user, 'token' => $token], 200);
+        return apiResponse::successResponse(['user' => $user, 'token' => $token], 200);
     }
 
     public function logout(): JsonResponse
     {
         auth()->user()->tokens()->delete();
 
-        return $this->successResponse('User Logged Out', 200);
+        return apiResponse::successResponse('User Logged Out', 200);
     }
 
     public function profile(): JsonResponse
     {
         $user = Auth::user();
 
-        return $this->successResponse($user, 200);
+        return apiResponse::successResponse($user, 200);
     }
 
     public function update_profile(Request $request): JsonResponse
@@ -75,7 +73,7 @@ class AuthenticateController extends Controller
 
         $user->save();
 
-        return $this->successResponse($user, 200);
+        return apiResponse::successResponse($user, 200);
     }
 
     public function forgotPassword(Request $request): JsonResponse
@@ -87,8 +85,8 @@ class AuthenticateController extends Controller
         );
         return $status === Password::RESET_LINK_SENT
 
-            ? $this->successResponse('Email sent, please check your inbox and click Reset Password.', 200)
-            : $this->errorResponse('Password reset link could not be sent.', 400);
+            ? apiResponse::successResponse('Email sent, please check your inbox and click Reset Password.')
+            : apiResponse::errorResponse('Password reset link could not be sent.', 400);
     }
 
     public function resetPassword(Request $request): JsonResponse
@@ -112,9 +110,9 @@ class AuthenticateController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return $this->successResponse('Password reset successfully.', 200);
+            return apiResponse::successResponse('Password reset successfully.');
         } else {
-            return $this->errorResponse('Password reset could not be completed.', 400);
+            return apiResponse::errorResponse('Password reset could not be completed.', 400);
         }
     }
 }

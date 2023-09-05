@@ -2,27 +2,28 @@
 
 namespace App\Http\Controllers\Api\V1\Home;
 
-use App\Http\Controllers\ApiController;
+use App\Helpers\apiResponse;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\RestaurantResource;
-use App\Models\Category;
-use App\Models\Item;
 use App\Models\Restaurant;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
 
-class RestaurantController extends ApiController
+class RestaurantController extends Controller
 {
 
     public function index(): JsonResponse
     {
-        return $this->successResponse(RestaurantResource::collection(Restaurant::all()), 200);
+        return apiResponse::successResponse([
+            'data' => RestaurantResource::collection(Restaurant::all()),
+
+        ]);
     }
 
     public function show(Restaurant $restaurant): JsonResponse
     {
         $restaurant->load('categories.items');
 
-        return $this->successResponse(new RestaurantResource($restaurant),200);
+        return apiResponse::successResponse(new RestaurantResource($restaurant), 200);
     }
 
 }
