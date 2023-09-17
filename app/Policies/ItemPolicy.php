@@ -13,8 +13,10 @@ class ItemPolicy
     {
         return $user->can('view_item');
     }
-
-
+    public function view(User $user): bool
+    {
+        return $user->can('view_item');
+    }
 
     /**
      * Determine whether the user can create models.
@@ -29,7 +31,7 @@ class ItemPolicy
      */
     public function update(User $user, Item $item): bool
     {
-        return $user->can('update_item');
+        return $user->can('edit_item');
     }
 
     /**

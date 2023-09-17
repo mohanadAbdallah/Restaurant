@@ -25,9 +25,6 @@ class ItemController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
         $categories = auth()->user()->restaurant->categories->whereNotNull('parent_id');
@@ -86,12 +83,10 @@ class ItemController extends Controller
         return redirect()->route('items.index')->with('status', 'تم التحديث بنجاح');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Item $item): RedirectResponse
     {
         $item->delete();
+
         return redirect()->back()->with('status', 'تم الحذف بنجاح');
     }
 }

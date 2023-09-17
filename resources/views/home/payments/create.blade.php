@@ -71,6 +71,7 @@
                 <button type="submit" id="submit" class="btn btn-success">
                     <span id="button-text">Pay now</span>
                     <div class="spinner hidden" id="spinner"></div>
+
                 </button>
 
                 <div id="payment-message" style="display: none" class="alert alert-info"></div>
@@ -235,6 +236,7 @@
 </style>
 
 <script src="https://js.stripe.com/v3/"></script>
+
 <script>
     // This is your test publishable API key.
     const stripe = Stripe("{{config('services.stripe.publishable_key')}}");
@@ -297,35 +299,33 @@
         setLoading(false);
     }
 
-    // // Fetches the payment intent status after payment submission
-    // async function checkStatus() {
-    //     const clientSecret = new URLSearchParams(window.location.search).get(
-    //         "payment_intent_client_secret"
-    //     );
-    //
-    //     console.log(clientSecret)
-    //
-    //     if (!clientSecret) {
-    //         return;
-    //     }
-    //
-    //     const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
-    //
-    //     switch (paymentIntent.status) {
-    //         case "succeeded":
-    //             showMessage("Payment succeeded!");
-    //             break;
-    //         case "processing":
-    //             showMessage("Your payment is processing.");
-    //             break;
-    //         case "requires_payment_method":
-    //             showMessage("Your payment was not successful, please try again.");
-    //             break;
-    //         default:
-    //             showMessage("Something went wrong.");
-    //             break;
-    //     }
-    // }
+    // Fetches the payment intent status after payment submission
+    async function checkStatus() {
+        const clientSecret = new URLSearchParams(window.location.search).get(
+            "payment_intent_client_secret"
+        );
+
+        if (!clientSecret) {
+            return;
+        }
+
+        const {paymentIntent} = await stripe.retrievePaymentIntent(clientSecret);
+
+        switch (paymentIntent.status) {
+            case "succeeded":
+                showMessage("Payment succeeded!");
+                break;
+            case "processing":
+                showMessage("Your payment is processing.");
+                break;
+            case "requires_payment_method":
+                showMessage("Your payment was not successful, please try again.");
+                break;
+            default:
+                showMessage("Something went wrong.");
+                break;
+        }
+    }
 
     // ------- UI helpers -------
 

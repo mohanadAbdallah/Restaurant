@@ -15,6 +15,10 @@ class CategoryPolicy
     {
         return $user->can('view_category');
     }
+    public function view(User $user): bool
+    {
+        return $user->can('view_category');
+    }
 
 
     /**
@@ -30,7 +34,7 @@ class CategoryPolicy
      */
     public function update(User $user, Category $category): bool
     {
-        return $user->can('update_category');
+        return $user->can('edit_category');
 
     }
 

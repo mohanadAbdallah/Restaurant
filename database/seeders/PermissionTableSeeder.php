@@ -22,7 +22,6 @@ class PermissionTableSeeder extends Seeder
                 'user' => ['view', 'add', 'edit', 'delete'],
                 'statistics' => ['view'],
                 'financial' => ['view'],
-
             ];
 
 

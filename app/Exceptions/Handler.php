@@ -43,19 +43,19 @@ class Handler extends ExceptionHandler
      * @param \Throwable $e
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function prepareJsonResponse($request, Throwable $e): JsonResponse
-    {
-        if ($e instanceof AuthenticationException) {
-            return apiResponse::errorResponse('Authentication failed: Unauthenticated', 401);
-        } elseif ($e instanceof AuthorizationException) {
-            return apiResponse::errorResponse('Authorization failed: Unauthorized', 403);
-        } elseif ($e instanceof NotFoundHttpException) {
-            return apiResponse::errorResponse('Resource not found: Model not found', 404);
-        } elseif ($e instanceof ValidationException) {
-            return apiResponse::errorResponse('Validation failed', 422);
-        } else {
-            return apiResponse::errorResponse('Server error: An unexpected error occurred',500);
-        }
-    }
+//    protected function prepareJsonResponse($request, Throwable $e): JsonResponse
+//    {
+//        if ($e instanceof AuthenticationException) {
+//            return apiResponse::errorResponse('Authentication failed: Unauthenticated', 401);
+//        } elseif ($e instanceof AuthorizationException) {
+//            return apiResponse::errorResponse('Authorization failed: Unauthorized', 403);
+//        } elseif ($e instanceof NotFoundHttpException) {
+//            return apiResponse::errorResponse('Resource not found: Model not found', 404);
+//        } elseif ($e instanceof ValidationException) {
+//            return apiResponse::errorResponse('Validation failed', 422);
+//        } else {
+//            return apiResponse::errorResponse('Server error: An unexpected error occurred',500);
+//        }
+//    }
 
 }

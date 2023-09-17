@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Payment;
+use Dflydev\DotAccessData\Data;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -17,7 +18,6 @@ class PaymentsController extends Controller
     {
         return view('home.payments.create', compact('order'));
     }
-
 
     /**
      * @throws ApiErrorException
@@ -57,6 +57,7 @@ class PaymentsController extends Controller
      */
     public function confirm(Request $request, Order $order): RedirectResponse
     {
+
         $stripe = new StripeClient(config('services.stripe.secret_key'));
 
         $paymentIntent = $stripe->paymentIntents->retrieve(
@@ -73,7 +74,7 @@ class PaymentsController extends Controller
             $order->forceFill([
                 'status' => '1'
             ])->save();
-            Cart::where('user_id',auth()->id())->delete();
+            Cart::where('user_id', auth()->id())->delete();
 
             return redirect()->route('home')->with('status', 'payment-succeed');
         }

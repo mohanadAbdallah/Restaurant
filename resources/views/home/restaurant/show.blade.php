@@ -18,8 +18,9 @@
     <div class="container">
         {{--Chat--}}
         <div class="floating-chat">
-            <a href="{{route('chat.index',request('restaurant'))}}" style="font-size: 15px;margin: 0px 0px 0px 0px">
-                <i class="fa fa-comments" style="color: #0c5460;padding: 0px 0px 0px 0px" aria-hidden="true"></i>
+            <a href="{{route('chat.index',request('restaurant'))}}" class="btn btn-primary">
+                Online Chat
+                <i class="fa fa-comments"></i>
             </a>
             <div class="chat">
 

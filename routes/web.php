@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentsController;
+use App\Http\Controllers\PlanController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
@@ -85,7 +86,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::resource('users', UserController::class);
 
-        Route::get('customers',[UserController::class,'customers'])->name('auth.customers');
+        Route::get('customers', [UserController::class, 'customers'])->name('auth.customers');
 
         Route::resource('roles', RoleController::class);
 
@@ -120,6 +121,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/messages/respondToUser/{id}', [ChatsController::class, 'respondToUser'])->name('chat.respondToUser');
 
+// Route::resource('/plans',PlanController::class);
+    // Route::post('/subscriptions',[PlanController::class,'subscriptions'])->name('subscriptions.create');
 
     Route::post('/cart/add', [\App\Http\Controllers\CartController::class, 'addToCart'])->name('cart.add');
 

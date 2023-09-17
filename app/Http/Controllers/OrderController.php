@@ -18,7 +18,10 @@ use Illuminate\View\View;
 
 class OrderController extends Controller
 {
-
+    public function __construct()
+    {
+        $this->authorizeResource(Order::class, 'order');
+    }
     public function index(Request $request): View
     {
         //where relation
@@ -74,7 +77,7 @@ class OrderController extends Controller
             'status' => 2,
         ]);
 
-        Notification::send($restaurantAdmin, new orderCreatedNotification($order));
+        //Notification::send($restaurantAdmin, new orderCreatedNotification($order));
 
         foreach ($dbCart->items as $item) {
             if ($item) {

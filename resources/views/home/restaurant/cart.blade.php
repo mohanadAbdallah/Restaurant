@@ -18,54 +18,56 @@
     @endif
     <thead>
     <tr>
+        <th>#</th>
         <th>العناصر</th>
         <th>السعر</th>
         <th>الكمية</th>
         <th>المجموع</th>
-        <th></th>
+        <th>العمليات</th>
+
     </tr>
     </thead>
 
     <tbody>
 
 
-
-@php $total = 0 @endphp
-{{--@if(session('cart'))--}}
-@if($cart)
-    @foreach($cart->items as $item)
-        <tr data-id ="{{ $item->id }}">
-            <td data-th="Product">
-                <div class="row">
-                    <div class="col-sm-9">
-                        <h4 class="nomargin">{{ $item->name }}</h4>
+    @php $total = 0 @endphp
+    {{--@if(session('cart'))--}}
+    @if($cart)
+        @foreach($cart->items as $item)
+            <tr data-id="{{ $item->id }}">
+                <td>{{$loop->iteration}}</td>
+                <td data-th="Product">
+                    <div class="row">
+                        <div class="col-sm-9">
+                            <h4 class="nomargin">{{ $item->name }}</h4>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td data-th="Price">₪ {{ $item->price }}</td>
-            <td data-th="Quantity">
+                </td>
+                <td data-th="Price">₪ {{ $item->price }}</td>
+                <td data-th="Quantity">
+                    <input type="number" value="{{ $item->pivot->quantity ?? '--' }}"
+                           class="form-control quantity update-cart"/>
+                </td>
 
-                    <input type="number" value="{{ $item->pivot->quantity ?? '--' }}" class="form-control quantity update-cart" />
+                <td data-th="Subtotal" class="text-center">₪ {{ $item->price * $item->pivot->quantity }}</td>
 
-            </td>
+                <td class="actions">
+                    <a class="btn btn-danger btn-sm delete-product">
+                        <i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        @endforeach
 
-                        <td data-th="Subtotal" class="text-center">₪ {{ $item->price * $item->pivot->quantity }}</td>
+    @endif
 
-            <td class="actions">
-                <a class="btn btn-danger btn-sm delete-product">
-                    <i class="fa fa-trash"></i></a>
-            </td>
-        </tr>
-    @endforeach
-
-@endif
-
-{{--@else--}}
-{{--    <p>Your cart is empty.</p>--}}
-{{--@endif--}}
+    {{--@else--}}
+    {{--    <p>Your cart is empty.</p>--}}
+    {{--@endif--}}
     </tbody>
     <tfoot>
     <tr>
+        <td></td>
         <td colspan="5" class="text-left">
             <form action="{{route('orders.store')}}" method="post">
                 @csrf
@@ -113,7 +115,7 @@
 
         var ele = $(this);
 
-        if(confirm("Are you sure want to remove?")) {
+        if (confirm("Are you sure want to remove?")) {
             $.ajax({
                 url: '{{ route('delete.from.cart') }}',
                 method: "DELETE",
