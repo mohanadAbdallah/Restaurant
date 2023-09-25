@@ -92,10 +92,10 @@ class OrderController extends Controller
         return view('orders.show', compact('order'));
     }
 
-    public function edit(Order $order): View
-    {
-        return \view('orders.edit',['order',$order]);
-    }
+//    public function edit(Order $order): View
+//    {
+//        return \view('orders.edit',compact('order'));
+//    }
 
 
     public function update(Request $request, Order $order): RedirectResponse

@@ -22,7 +22,7 @@
 
                             <select name="item_id" class="form-control" id="item_id">
                                 <option value="">None</option>
-                                @foreach($items as $item)
+                                @foreach($order->items as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>

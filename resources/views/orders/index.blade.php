@@ -73,10 +73,10 @@
 
                                         <td>
                                             <div class="form-group">
-                                                @can('edit_item')
-                                                    <a href="{{route('orders.edit',$order->id)}}"
+                                                @can('view_item')
+                                                    <a href="{{route('orders.show',$order->id)}}"
                                                        class="btn btn-primary btn-sm">
-                                                        <i class="fa fa-edit"></i>
+                                                        <i class="fa fa-atom"></i>
                                                     </a>
                                                 @endcan
                                                 @can('delete_item')
