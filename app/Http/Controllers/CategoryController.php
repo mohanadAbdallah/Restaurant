@@ -48,7 +48,7 @@ class CategoryController extends Controller
     public function store(Request $request, $parent_id =null): RedirectResponse
     {
         $validatedData = $request->validate([
-            'title' => ['required', 'string', 'unique:categories'],
+            'title' => ['required', 'string'],
         ]);
 
 

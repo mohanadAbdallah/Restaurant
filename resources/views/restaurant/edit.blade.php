@@ -50,7 +50,15 @@
                             <input class="form-control" name="image" style="padding: 9px 22px 0px 1px;height: 48px;" type="file" id="imageInput">
                         </div>
                     </div>
+                    <div class="form-group row ">
+                        <div class="col-sm-6 mb-3 mb-sm-0">
+                            <textarea class="form-control" name="description" id="floatingTextarea2" style="height: 100px">
+                                {{$restaurant->description}}
+                            </textarea>
+                            <label for="floatingTextarea2">الوصف (إختياري )</label>
 
+                        </div>
+                    </div>
                     <div class="form-group row">
                         <div class="col-sm-6 mb-3 mb-sm-0">
                             <label class="form-label">المستخدم</label>

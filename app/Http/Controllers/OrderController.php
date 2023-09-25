@@ -24,8 +24,6 @@ class OrderController extends Controller
     }
     public function index(Request $request): View
     {
-        //where relation
-
         $orders = Order::query();
 
         if (auth()->user()->restaurant) {
@@ -77,7 +75,7 @@ class OrderController extends Controller
             'status' => 2,
         ]);
 
-        //Notification::send($restaurantAdmin, new orderCreatedNotification($order));
+//        Notification::send($restaurantAdmin, new orderCreatedNotification($order));
 
         foreach ($dbCart->items as $item) {
             if ($item) {

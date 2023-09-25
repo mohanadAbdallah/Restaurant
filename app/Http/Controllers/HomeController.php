@@ -15,7 +15,6 @@ class HomeController extends Controller
 {
     public function index(): View
     {
-
         $restaurants = Restaurant::all();
         return view('home', compact('restaurants'));
     }

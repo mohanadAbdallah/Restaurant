@@ -47,7 +47,7 @@
                     Alerts Center
                 </h6>
                 @foreach(auth()->user()->unreadNotifications as $notification)
-                <p>New Order : {{$notification->data['order_number'] ?? ''}} was added in {{$notification->created_at->diffForHumans() ?? ''}}</p>
+                    <p>New Order : {{$notification->data['order_number'] ?? ''}} was added in {{$notification->created_at->diffForHumans() ?? ''}}</p>
                 @endforeach
                 <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
             </div>
@@ -72,9 +72,9 @@
                 </h6>
 
 
-               <div class="messages">
+                <div class="messages">
 
-               </div>
+                </div>
 
                 <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>
             </div>
@@ -89,7 +89,7 @@
                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{auth()->user()->name}}</span>
                 <img class="img-profile rounded-circle"
-                src="{{url("storage/images/". auth()->user()->image)}}">
+                     src="{{url("storage/images/". auth()->user()->image)}}">
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -141,7 +141,7 @@
                         '<div class="small text-gray-500"></div>' + response.data.user.name + ' </div>' +
                         ' </a>' +
                         '</div>'
-                )
+                    )
                 }else {
                     $(`.${className}`).html(
                         '<a class="dropdown-item d-flex align-items-center chat-message-item" user-id='+data.message.from_user+' user-name='+ response.data.user.name +' href="javascript:void(0);">' +

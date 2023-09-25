@@ -14,6 +14,9 @@ class ChatsController extends Controller
 
     public function index(Request $request): View
     {
+        if (\auth()->user()->hasRole('Super Admin')){
+            abort(403);
+        }
         $to_user = User::where('restaurant_id', $request->id)->first()->id;
 
         $messages = Message::where(function ($query) use ($to_user) {
@@ -21,7 +24,8 @@ class ChatsController extends Controller
                 ->where('to_user', $to_user);
         })
             ->orWhere(function ($query) use ($to_user) {
-                $query->where('from_user', $to_user)->where('to_user', Auth::user()->id);
+                $query->where('from_user', $to_user)
+                    ->where('to_user', Auth::user()->id);
             })->orderBy('created_at', 'ASC')->get();
 
         return view('home.restaurant.chat', compact('messages'));
@@ -88,8 +92,7 @@ class ChatsController extends Controller
 
     public function fetchMessages(Request $request): \Illuminate\Http\JsonResponse
     {
-
-        $from_user = User::where('restaurant_id', $request->data['from_user'])->first()->id;
+        $from_user = User::where('id', $request->data['from_user'])->first()->id;
         $to_user = \auth()->id();
 
         $messages = Message::where(function ($query) use ($to_user) {

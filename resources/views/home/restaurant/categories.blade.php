@@ -14,7 +14,7 @@
         <h3 class="section-title mb-6 pb-3 text-center">Our Food Orders</h3>
         <div class="row">
             @foreach($items as $item)
-                <div class="col-md-6 mb-4">
+                <div class="col-md-6 mb-5" style="margin-bottom: 100px;">
                     <a href="#" class="custom-list">
                         <div class="img-holder">
                             <img src="{{url('storage/images/'.$item->image)}}" alt="{{$item->name}}">

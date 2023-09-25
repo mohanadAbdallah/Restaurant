@@ -37,10 +37,10 @@ class RestaurantController extends Controller
     {
         $validatedData = $request->validated();
 
-        if (request()->hasFile('image')) {
+        if ($request->hasFile('image')) {
             $imageName = $request->image->getClientOriginalName();
 
-            $request->image->store('images','public');
+            $request->file('image')->storeAs('images', $imageName,'public');
             $validatedData['image'] = $imageName;
         }
 

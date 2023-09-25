@@ -27,7 +27,7 @@ class ItemController extends Controller
 
     public function create(): View
     {
-        $categories = auth()->user()->restaurant->categories->whereNotNull('parent_id');
+        $categories = auth()->user()->restaurant->categories;
         return view('item.create', compact('categories'));
     }
 
@@ -62,7 +62,7 @@ class ItemController extends Controller
 
     public function edit(Item $item): View
     {
-        $categories = auth()->user()->restaurant->categories->whereNotNull('parent_id');
+        $categories = auth()->user()->restaurant->categories;
         return view('item.edit', compact('item', 'categories'));
     }
 

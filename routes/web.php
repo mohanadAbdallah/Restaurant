@@ -76,6 +76,9 @@ Route::middleware(['auth'])->group(function () {
             $data = [
                 'restaurants' => \App\Models\Restaurant::all()->count(),
                 'users' => \App\Models\User::all()->count(),
+                'orders' => \App\Models\Order::whereHas('items', function ($q){
+                    $q->where('restaurant_id', auth()->user()->restaurant?->id);
+                })->count()
             ];
             return view('dashboard')->with('data', $data);
 
